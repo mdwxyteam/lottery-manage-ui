@@ -11,14 +11,12 @@
           </el-breadcrumb>
         </el-col>
         <el-col :span="2">
-          <router-link :to="{path:'/addPrize',query: {name: '新增奖品'}}">
-            <el-button type="primary" icon="el-icon-plus">新增</el-button>
-          </router-link>
+            <el-button type="primary" icon="el-icon-plus" @click="add()">新增</el-button>
         </el-col>
       </el-row>
     </div>
     <div class="container">
-      <div class="sm-layout-left-center-wrap  ">
+      <div class="sm-layout-left-center-wrap">
         <el-card
           v-for="(prize , index) in tableData"
           :key="index"
@@ -31,8 +29,8 @@
             <div class="desciption" style="height:50px">奖品描述：{{prize.prizeDescription}}</div>
             <div class="bottom clearfix">
               <div class="count">奖品数量：{{prize.prizeCount}}</div>
-              <el-button type="text" class="button" @click="edit(item)">修改</el-button>
-              <el-button type="text" class="button" @click="del(item)">删除</el-button>
+              <el-button type="text" class="button" @click="edit(prize)">修改</el-button>
+              <el-button type="text" class="button" @click="del(prize.id)">删除</el-button>
             </div>
           </div>
         </el-card>
@@ -56,12 +54,13 @@
 
 <script>
 import { prize } from "../../../api/index";
+import { delPrize } from "../../../api/index";
 export default {
   data() {
     return {
       tableData: [],
       cur_page: 1,
-      cur_rows: 10,
+      cur_rows: 8,
       cur_total: 1,
       cur_page_size: 0,
       cur_page_count: 0,
@@ -103,36 +102,74 @@ export default {
     /**获取数据 */
     getData() {
       prize(this.cur_page, this.cur_rows).then(res => {
-        console.log(res.data.data.list);
         this.tableData = res.data.data.list;
         this.cur_total = res.data.data.total;
         this.cur_page_size = res.data.data.list.length;
       });
     },
 
+    
+    /**新增*/
+    add() {
+      this.$router.push({
+        path: "/addPrize",
+        query: {
+          name: "新增奖品",
+        }
+      });
+    },
+
     /**编辑 */
-    edit(i) {
+    edit(prize) {
+      console.log(prize.id);
       this.$router.push({
         path: "/editPrize",
         query: {
-          name: "编辑",
-          title: i.title,
-          count: i.count,
-          imgUrl: i.imgUrl
+          name: "编辑奖品",
+          id: prize.id,
+          desciption: prize.prizeDescription,
+          count: prize.prizeCount,
+          imgUrl:prize.iconUrl
         }
       });
     },
     /**删除*/
-    del(i) {
+    del(id) {
       this.$confirm("删除该奖品, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
         .then(() => {
-          this.$message({
-            type: "success",
-            message: "删除成功!"
+          delPrize(id).then(resoponse => {
+            if (resoponse.status == 200) {
+              this.$message({
+                type: "success",
+                message: "删除成功!"
+              });
+
+              if(this.tableData.length == 1) {
+                if (this.cur_page > 1) {
+                  this.cur_page = this.cur_page - 1;
+                } else {
+                  this.cur_page = 1;
+                }
+                
+                
+              }
+               for (var i = 0; i < this.tableData.length; i++) {
+                var dataObj = this.tableData[i];
+                if (id == dataObj.id) {
+                  //tabDataList 移除 这个dataObj对象，然后tabDataList 赋值给tableData
+                  this.tableData.splice(i, 1);//这个删除方法有问题，去网上找一个
+
+                  console.log(this.tableData)
+                  break;
+                }
+              }
+              //this.tableData = this.tableData;
+               //this.getData();//这样性能不好，老是请求服务器
+            }
           });
         })
         .catch(() => {

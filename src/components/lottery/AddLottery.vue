@@ -181,5 +181,16 @@ export default {
       this.$message.success("提交成功！");
     }
   }
+   // for (var i = 0; i < tabDataList.length; i++) {
+              //   var dataObj = that.tableData[i];
+              //   if (id == dataObj.id) {
+              //     //tabDataList 移除 这个dataObj对象，然后tabDataList 赋值给tableData
+              //     tabDataList.splice(i, 1);//这个删除方法有问题，去网上找一个
+
+              //     console.log(tabDataList)
+              //     break;
+              //   }
+              // }
+              // that.tableData = tabDataList;
 };
 </script>

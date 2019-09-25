@@ -20,24 +20,24 @@
       <div class="container">
         <div class="headerTitle">奖品信息</div>
         <div>
-        <el-form-item label="奖品描述" prop="prizeDescription" placeholder="请输入奖品描述">
-          <el-input v-model="ruleForm.prizeDescription" type="textarea"></el-input>
-        </el-form-item>
-        <el-form-item label="奖品数量">
-          <el-input-number v-model="ruleForm.prizeCount" :min="1" :max="100"></el-input-number>
-        </el-form-item>
-        <el-form-item label="奖品图片">
-          <el-upload
-            class="avatar-uploader"
-            :action="file"
-            :show-file-list="false"
-            :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload"
-          >
-            <img v-if="imgUrl" :src="imgUrl" class="avatar" />
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
-        </el-form-item>
+          <el-form-item label="奖品描述" prop="prizeDescription" placeholder="请输入奖品描述">
+            <el-input v-model="ruleForm.prizeDescription" type="textarea"></el-input>
+          </el-form-item>
+          <el-form-item label="奖品数量">
+            <el-input-number v-model="ruleForm.prizeCount" :min="1" :max="100"></el-input-number>
+          </el-form-item>
+          <el-form-item label="奖品图片" prop="imgUrl">
+            <el-upload
+              class="avatar-uploader"
+              :action="file"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload"
+            >
+              <img v-if="imgUrl" :src="imgUrl" class="avatar" />
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </el-form-item>
         </div>
       </div>
     </div>
@@ -51,14 +51,17 @@ export default {
   name: "add",
   data() {
     return {
+      file: file,
+      iconFile: "",
       imgUrl: "",
-      file:file,
       ruleForm: {
         prizeDescription: "",
         prizeCount: ""
       },
       rules: {
-        prizeDescription: [{ required: true, message: "请输入描述", trigger: "blur" }],
+        prizeDescription: [
+          { required: true, message: "请输入描述", trigger: "blur" }
+        ]
       }
     };
   },
@@ -66,6 +69,8 @@ export default {
     /**图片 */
     handleAvatarSuccess(res, file) {
       this.imgUrl = URL.createObjectURL(file.raw);
+
+      this.iconFile = file.response.data;
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg";
@@ -81,9 +86,22 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          addPrize(this.ruleForm.prizeDescription,this.imgUrl,this.ruleForm.prizeCount).then(resoponse => {
-            if (resoponse.status = 200) {
-                 this.$message.success("添加成功");
+             if(this.iconFile == ""){
+                this.$message.error("请上传图片");
+                return false;
+             }
+          addPrize(
+            this.ruleForm.prizeDescription,
+            this.iconFile,
+            this.ruleForm.prizeCount
+          ).then(resoponse => {
+            if ((resoponse.status = 200)) {
+              this.$message.success("添加成功");
+              this.ruleForm = {
+                prizeDescription: "",
+                prizeCount: 1
+              };
+              this.imgUrl = "";
             }
           });
         }

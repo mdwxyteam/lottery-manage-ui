@@ -23,6 +23,17 @@ var fileURL = 'http://127.0.0.1:8080/lottery'
    return axios.post(webURL+'/add/prize?prizeDescription='+ prizeDescription +'&iconUrl='+ iconUrl +'&prizeCount='+ prizeCount
  )
 }
+ /**修改保存奖品 */
+export const editPrize = (prizeId,prizeDescription,iconUrl,prizeCount)=>{
+   return axios.post(webURL+'/edit/prize?prizeId='+ prizeId +'&prizeDescription='+ prizeDescription + '&iconUrl=' + iconUrl +'&prizeCount='+ prizeCount
+   )
+}
+ /**删除状态奖品 */    
+ export const delPrize = (prizeId) => {
+  return axios.post(webURL+'/del/prize?prizeId='+ prizeId
+ )
+}
+
 
 /**奖品列表 */    
 export const prize = (page,rows) => {
