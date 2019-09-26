@@ -18,6 +18,17 @@ var fileURL = 'http://127.0.0.1:8080/lottery'
     return axios.post(webURL+'/edit/type?id='+ id +'&type='+ type
   )
 }
+/**更改赞助商类型状态 */   
+export const statusType = (typeId,status) => {
+    var isStatus
+    if(status == true){
+      isStatus = 0;  
+    } else if(status == false){
+      isStatus = 1;
+    }
+     return axios.post(webURL+'/status/type?typeId='+ typeId +'&isStatus='+ isStatus
+  )
+}
  /**新增保存奖品 */    
  export const addPrize = (prizeDescription,iconUrl,prizeCount) => {
    return axios.post(webURL+'/add/prize?prizeDescription='+ prizeDescription +'&iconUrl='+ iconUrl +'&prizeCount='+ prizeCount

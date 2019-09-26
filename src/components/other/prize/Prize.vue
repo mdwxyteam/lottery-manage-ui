@@ -29,8 +29,8 @@
             <div class="desciption" style="height:50px">奖品描述：{{prize.prizeDescription}}</div>
             <div class="bottom clearfix">
               <div class="count">奖品数量：{{prize.prizeCount}}</div>
-              <el-button type="text" class="button" @click="edit(prize)">修改</el-button>
-              <el-button type="text" class="button" @click="del(prize.id)">删除</el-button>
+              <el-button type="text" icon="el-icon-edit"   class="button" @click="edit(prize)">修改</el-button>
+              <el-button type="text" icon="el-icon-delete" class="button" @click="del(prize.id)">删除</el-button>
             </div>
           </div>
         </el-card>
@@ -121,7 +121,6 @@ export default {
 
     /**编辑 */
     edit(prize) {
-      console.log(prize.id);
       this.$router.push({
         path: "/editPrize",
         query: {
@@ -153,22 +152,15 @@ export default {
                   this.cur_page = this.cur_page - 1;
                 } else {
                   this.cur_page = 1;
-                }
-                
-                
+                }     
               }
                for (var i = 0; i < this.tableData.length; i++) {
                 var dataObj = this.tableData[i];
                 if (id == dataObj.id) {
-                  //tabDataList 移除 这个dataObj对象，然后tabDataList 赋值给tableData
-                  this.tableData.splice(i, 1);//这个删除方法有问题，去网上找一个
-
-                  console.log(this.tableData)
+                  this.tableData.splice(i, 1);
                   break;
                 }
               }
-              //this.tableData = this.tableData;
-               //this.getData();//这样性能不好，老是请求服务器
             }
           });
         })
