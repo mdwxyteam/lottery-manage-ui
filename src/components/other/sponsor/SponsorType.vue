@@ -5,22 +5,18 @@
         <el-col :span="22">
           <el-breadcrumb separator="/">
             <el-breadcrumb-item>
-              <i class="el-icon-lx-calendar"></i>其它管理
+              <i class="el-icon-lx-calendar"></i> 其它管理
             </el-breadcrumb-item>
             <el-breadcrumb-item>赞助商类型</el-breadcrumb-item>
           </el-breadcrumb>
         </el-col>
         <el-col :span="2">
-          <router-link :to="{path:'/addsponsortype',query: {name: '新增赞助商类型'}}">
-            <el-button type="primary" icon="el-icon-plus">新增</el-button>
-          </router-link>
+            <el-button type="primary" icon="el-icon-plus" @click="add()">新增</el-button>
         </el-col>
       </el-row>
     </div>
-
-    <div class="table">
-      <div class="container">
-        <div class="handle-box">
+    <div class="container">
+       <div class="handle-box">
           <el-row :gutter="20">
             <el-col :span="6">
               <el-button
@@ -32,7 +28,7 @@
             </el-col>
           </el-row>
         </div>
-        <el-table
+         <el-table
           :data="tableData"
           border
           class="table"
@@ -48,7 +44,7 @@
                 class="status"
                 slot="reference"
                 v-model="scope.row.isStatus"
-                 disabled="true"
+                disabled
                 @click.native="handleStatus(scope.row)"
               ></el-switch>
             </template>
@@ -59,23 +55,20 @@
               <el-button type="text" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
             </template>
           </el-table-column>
-        </el-table>
-        <div
-          class="sm-layout-bottom-center sm-width-100-per"
-          style="height:76px;justify-content: flex-end;"
-        >
-          <el-pagination
-            background
-            layout="prev, pager, next"
-            :page-size="cur_rows"
-            :total="cur_total"
-            :page-count="cur_page_count"
-            :current-page="cur_page"
-            @current-change="currentChange"
-            @prev-click="prevPage"
-            @next-click="nextPage"
-          ></el-pagination>
-        </div>
+        </el-table> 
+      </div>
+      <div class="pagination sm-margin-top-1rem">
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          :page-size="cur_rows"
+          :total="cur_total"
+          :page-count="cur_page_count"
+          :current-page="cur_page"
+          @current-change="currentChange"
+          @prev-click="prevPage"
+          @next-click="nextPage"
+        ></el-pagination>
       </div>
     </div>
   </div>
@@ -85,7 +78,6 @@
 import { sponsorType } from "../../../api/index";
 import { statusType } from "../../../api/index";
 export default {
-  name: "sponsorTypeTable",
   data() {
     return {
       tableData: [],
@@ -95,7 +87,7 @@ export default {
       cur_page_size: 0,
       cur_page_count: 0,
       cur_page_clic: false,
-      multipleSelection: []
+      multipleSelection: [],
     };
   },
   created() {
@@ -150,6 +142,17 @@ export default {
       });
     },
 
+    
+     /**新增*/
+    add() {
+      this.$router.push({
+        path: "/addsponsortype",
+        query: {
+          name: "新增赞助商类型",
+        }
+      });
+    },
+
     /**编辑 */
     handleEdit(row) {
       this.$router.push({
@@ -162,7 +165,7 @@ export default {
       });
     },
 
-    /**状态启用 */
+   /**状态启用 */
     handleStatus(row) {
       if (row.isStatus == true) {
         this.$confirm("禁用该类型, 是否继续?", "提示", {
@@ -269,7 +272,7 @@ export default {
           });
         });
     },
-    handleSelectionChange(e) {
+      handleSelectionChange(e) {
       this.multipleSelection = e;
     }
   }

@@ -50,8 +50,12 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           addType(this.ruleForm.typeName).then(resoponse => {
-            if (resoponse.status = 200) {
-                 this.$message.success("添加成功");
+            if ((resoponse.status = 200)) {
+              this.$message.success("添加成功");
+              this.ruleForm.typeName = "";
+              // this.$router.push({
+              //   path: "/sponsortype"
+              // });
             }
           });
         }

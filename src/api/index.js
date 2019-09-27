@@ -14,8 +14,8 @@ var fileURL = 'http://127.0.0.1:8080/lottery'
   )
 }
 /**修改保存赞助商类型 */   
-  export const editType = (id,type) => {
-    return axios.post(webURL+'/edit/type?id='+ id +'&type='+ type
+  export const editType = (typeId,typeName) => {
+    return axios.post(webURL+'/edit/type?typeId='+ typeId +'&typeName='+ typeName
   )
 }
 /**更改赞助商类型状态 */   

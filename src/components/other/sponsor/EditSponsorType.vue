@@ -20,7 +20,6 @@
       <div class="container">
         <div class="headerTitle">类型信息</div>
         <div class="div-el-form">
-          <el-input v-model="ruleForm.id" type="hidden"></el-input>
           <el-form-item label="类型名称" prop="typeName" placeholder="请输入类型名称">
             <el-input v-model="ruleForm.typeName"></el-input>
           </el-form-item>
@@ -36,9 +35,9 @@ export default {
   name: "edit",
   data() {
     return {
+      id: this.$route.query.id,
       ruleForm: {
-        id: this.$route.query.id,
-        typeName: this.$route.query.typeName,
+        typeName: this.$route.query.typeName
       },
       rules: {
         typeName: [
@@ -51,9 +50,13 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          editType(this.ruleForm.id,this.ruleForm.typeName).then(resoponse => {
-            if (resoponse.status = 200) {
-                 this.$message.success("修改成功");
+          editType(this.id, this.ruleForm.typeName).then(resoponse => {
+            if ((resoponse.status = 200)) {
+              this.$message.success("更新成功");
+              this.typeName = this.ruleForm.typeName;
+              //  this.$router.push({
+              //    path: "/sponsortype"
+              // });
             }
           });
         }
