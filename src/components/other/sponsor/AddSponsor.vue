@@ -13,9 +13,8 @@
         <div class="sm-layout-side-horizontal sm-width-50-per">
           <el-input placeholder="请输入内容" class="sm-width-40-per"></el-input>
 
-          <el-select class="sm-width-40-per" placeholder="活动区域">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+          <el-select  v-model="typeId" class="sm-width-40-per" placeholder="赞助商类型">
+            <el-option v-for="sponsorObj in sponsorList" :key="sponsorObj.typeName" :label="sponsorObj.typeName" :value="sponsorObj.id"></el-option>
           </el-select>
         </div>
       </div>
@@ -32,6 +31,7 @@
 </template>
 
 <script>
+import { allsponsorType } from "../../../api/index";
 import { mavonEditor } from "mavon-editor";
 import "mavon-editor/dist/css/index.css";
 export default {
@@ -40,11 +40,17 @@ export default {
     return {
       content: "",
       html: "",
-      configs: {}
+      configs: {},
+      sponsorList: [],
+      typeId: ""
     };
   },
   components: {
     mavonEditor
+  },
+  mounted() {
+    console.log("---------------------------")
+    this.getSponsorType();
   },
   methods: {
     // 将图片上传到服务器，返回地址替换到md中
@@ -69,6 +75,24 @@ export default {
       console.log(this.content);
       console.log(this.html);
       this.$message.success("提交成功！");
+    },
+    getSponsorType() {
+      // this.sponsorList = allsponsorType();
+      var that = this;
+      allsponsorType().then((res)=>{
+        
+        const dataObj = res.data;
+        console.log(dataObj);
+        console.log(dataObj.code);
+        if (dataObj.code == 0) {
+          that.sponsorList = dataObj.data;
+          console.log(that.sponsorList)
+        } else {
+          //失败
+        }
+      }).catch((res) => {
+        //失败
+      })
     }
   }
 };

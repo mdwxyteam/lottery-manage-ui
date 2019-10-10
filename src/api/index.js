@@ -1,12 +1,15 @@
 import axios from 'axios';
 
-var webURL = 'http://127.0.0.1:8080/web/api';
-var fileURL = 'http://127.0.0.1:8080/lottery'
+var webURL = 'http://127.0.0.1:8081/web/api';
+var fileURL = 'http://127.0.0.1:8081/lottery'
 
 /**赞助商类型列表 */    
  export const sponsorType = (page,rows) => {
-     return axios.get(webURL+'/page/type?pageNum='+ page +'&pageSize='+rows
-    )
+      return axios.get(webURL+'/page/type?pageNum='+ page +'&pageSize='+rows)
+}
+/**获取所有赞助商类型 */    
+export const allsponsorType = () => {
+   return axios.get(webURL+'/allType');
 }
   /**新增保存赞助商类型 */    
   export const addType = (type) => {
