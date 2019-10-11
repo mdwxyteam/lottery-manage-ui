@@ -76,3 +76,73 @@ hr {
   border-style: dashed;
 }
 </style>
+<script>
+import { AMapManager } from "vue-amap"
+let amapManager = new AMapManager();
+export default {
+  name: "mdamap",
+  data () {
+    let vm = this;
+    return {
+      zoom: 16,
+      center: [121.329402, 31.228667],
+      result: [],
+      address: "",
+      radius: 100,
+      toSearch: false,
+      searchKey: '',
+      amapManager,
+      map: null,
+      poiPicker:
+        null,
+      events: {
+        init (o) {
+          vm.map = o;
+        }
+      }
+    };
+  },
+  watch: {
+
+    map: function () {
+      if (this.map != null) {
+        //
+        this.initSearch();
+      }
+    }
+  },
+  methods: {
+    initSearch () {
+      let vm = this; let
+        map = this.amapManager.getMap();
+      this.toSearch = true;
+      AMapUI.loadUI(['misc/PoiPicker'], function (PoiPicker) {
+        var poiPicker = new PoiPicker({
+          input: 'search', //输入框id 
+          placeSearchOptions: {            map: map, pageSize:
+              10          },//地点搜索配置 
+          suggestContainer: 'searchTip',//输入提示显示DOM
+          searchResultsContainer: 'searchTip'//搜索结果显示DOM 
+        }); vm.poiPicker = poiPicker;
+        //监听poi选中信息 
+        poiPicker.on('poiPicked', function (poiResult) {
+          let source = poiResult.source;
+          let poi = poiResult.item;
+          if (source !== 'search') {
+            poiPicker.searchByKeyword(poi.name);
+          } else {
+            poiPicker.clearSearchResults();
+            vm.center = [poiResult.item.location.lng, poiResult.item.location.lat];
+            vm.address = poi.name; vm.searchKey = ""; vm.toSearch = false;
+          }
+        });
+      });
+    },
+    searchByHand () {
+      if (this.searchKey != '') {
+        this.poiPicker.searchByKeyword(this.searchKey);
+      }
+    }
+  }
+}
+</script>

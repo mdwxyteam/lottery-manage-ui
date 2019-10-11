@@ -1,132 +1,155 @@
 
 <template>
-  <div class="mdamap" style="width:850px;height:400px;">
-    <div id="outer-box">
-        <div id="container" class="map" tabindex="0"></div>
-        <div id="panel" class="scrollbar1">
-            <div id="searchBar">
-                <input id="searchInput" placeholder="输入关键字搜素POI" />
-            </div>
-            <div id="searchResults"></div>
-        </div>
+  <div class="mdamap"
+       style="width:880px;height:400px;">
+    <div id="container"
+         class="map"
+         tabindex="0"></div>
+
+    <el-tag id="locationpositondata"
+            type="success">{{poiResult?poiResult.item.location.lat: "0.00"}},{{poiResult?poiResult.item.location.lng: "0.00"}}</el-tag>
+
+    <div id="pickerBox"
+         style="">
+      <el-input id="pickerInput"
+                placeholder="输入关键字选取地点"
+                v-model="searchData"></el-input>
+      <div id="poiInfo"></div>
     </div>
   </div>
 </template>
 <style>
-     #outer-box {
-        height: 100%;
-        padding-right: 300px;
-    }
-    
-    #container {
-        height: 100%;
-        width: 100%;
-    }
-    
-    #panel {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        right: 0;
-        height: 100%;
-        overflow: auto;
-        width: 300px;
-        z-index: 999;
-        border-left: 1px solid #eaeaea;
-        background: #fff;
-    }
-    
-    #searchBar {
-        height: 30px;
-        background: #ccc;
-    }
-    
-    #searchInput {
-        width: 100%;
-        height: 30px;
-        line-height: 30%;
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-        border: none;
-        border-bottom: 1px solid #ccc;
-        padding: 0 5px;
-    }
-    
-    #searchResults {
-        overflow: auto;
-        height: calc(100% - 30px);
-    }
-    
-    .amap_lib_placeSearch,
-    .amap-ui-poi-picker-sugg-container {
-        border: none!important;
-    }
-    
-    .amap_lib_placeSearch .poibox.highlight {
-        background-color: #CAE1FF;
-    }
-    
-    .poi-more {
-        display: none!important;
-    }
-  </style>
+#container {
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  font-size: 13px;
+}
+
+#pickerBox {
+  position: absolute;
+  z-index: 9999;
+  top: 50px;
+  right: 300px;
+  width: 300px;
+}
+#rightbutton {
+  position: absolute;
+  z-index: 9999;
+  top: 50px;
+  right: 80px;
+  width: 120px;
+}
+#locationpositondata {
+  position: absolute;
+  z-index: 9999;
+  top: 50px;
+  left: 30px;
+  width: 150px;
+}
+#pickerInput {
+  width: 200px;
+  padding: 5px 5px;
+}
+
+#poiInfo {
+  background: #fff;
+}
+
+.amap_lib_placeSearch .poibox.highlight {
+  background-color: #cae1ff;
+}
+.amap_lib_placeSearch .poi-more {
+  display: none !important;
+}
+</style>
 <script>
 import MapLoader from '@/assets/js/AMap.js'
 export default {
   name: 'mdamap',
   data () {
     return {
-      map: null
+      searchData: "美食",
+      map: null,
+      poiResult: null
+      // {
+      //   item: {
+      //     location: {
+      //       lat: 0.00,
+      //       lng: 0.00
+      //     }
+      //   }
+      // }
     }
   },
   mounted () {
     let that = this
-    MapLoader().then((mapObj = {AMapUI, AMap}) => {
-      alert('地图加载成功')
+    MapLoader().then((mapObj = { AMapUI, AMap }) => {
       that.map = new AMap.Map('container', {
-        center: [106.550464,29.563761],
+        center: [106.550464, 29.563761],
         zoom: 11
       })
-    console.log("-------AMapUI----------")
-    console.log(AMapUI)
-    
-     AMapUI.loadUI(['misc/PoiPicker'], function(PoiPicker) {
+
+      AMapUI.loadUI(['misc/PoiPicker'], function (PoiPicker) {
 
         var poiPicker = new PoiPicker({
-            input: 'searchInput',
-            placeSearchOptions: {
-                map: that.map,
-                pageSize: 10
-            },
-            searchResultsContainer: 'searchResults'
+          //city:'北京',
+          input: 'pickerInput'
         });
 
-        poiPicker.on('poiPicked', function(poiResult) {
+        //初始化poiPicker
+        poiPickerReady(poiPicker);
+      });
 
-            poiPicker.hideSearchResults();
+      function poiPickerReady (poiPicker) {
 
-            var source = poiResult.source,
-                poi = poiResult.item;
+        window.poiPicker = poiPicker;
 
-            if (source !== 'search') {
+        var marker = new AMap.Marker();
 
-                //suggest来源的，同样调用搜索
-                poiPicker.searchByKeyword(poi.name);
-
-            } else {
-
-                //console.log(poi);
-            }
+        var infoWindow = new AMap.InfoWindow({
+          offset: new AMap.Pixel(0, -20)
         });
 
-        poiPicker.onCityReady(function() {
-            poiPicker.searchByKeyword('美食');
-        });
-    });
+        //选取了某个POI
+        poiPicker.on('poiPicked', function (poiResult) {
 
-    }). catch((e) => {
-      alert('地图加载失败' ,e);
+          var source = poiResult.source,
+            poi = poiResult.item,
+            info = {
+              source: source,
+              id: poi.id,
+              name: poi.name,
+              location: poi.location.toString(),
+              address: poi.address
+            };
+
+          marker.setMap(that.map);
+          infoWindow.setMap(that.map);
+
+          marker.setPosition(poi.location);
+          infoWindow.setPosition(poi.location);
+
+          infoWindow.setContent('POI信息: <pre>' + JSON.stringify(info, null, 2) + '</pre>');
+          infoWindow.open(that.map, marker.getPosition());
+          that.poiResult = poiResult;
+          console.log(infoWindow)
+          //map.setCenter(marker.getPosition());
+        });
+
+        poiPicker.onCityReady(function () {
+          poiPicker.suggest('美食');
+        });
+      }
+
+    }).catch((e) => {
+      alert('地图加载失败', e);
     })
+  },
+  methods: {
+    getLocation () {
+      return this.poiResult;
+    }
   }
 }
 </script>
