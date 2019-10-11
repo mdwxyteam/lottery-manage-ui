@@ -17,6 +17,8 @@ Vue.use(VueI18n);
 Vue.use(ElementUI, {
     size: 'small'
 });
+
+  
 Vue.prototype.$axios = axios;
 
 const i18n = new VueI18n({

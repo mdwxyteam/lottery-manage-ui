@@ -16,7 +16,15 @@
           <el-select  v-model="typeId" class="sm-width-40-per" placeholder="赞助商类型">
             <el-option v-for="sponsorObj in sponsorList" :key="sponsorObj.typeName" :label="sponsorObj.typeName" :value="sponsorObj.id"></el-option>
           </el-select>
+
+          <el-button @click="dialogMapVisible = true" icon="el-icon-position">商户位置</el-button>
         </div>
+
+        <el-dialog title="商户位置" :visible.sync="dialogMapVisible">
+          
+          <mdamap>
+          </mdamap>
+        </el-dialog>
       </div>
       <mavon-editor
         v-model="content"
@@ -29,10 +37,15 @@
     </div>
   </div>
 </template>
-
+  <style>
+    .amap-demo {
+      height: 300px;
+    }
+  </style>
 <script>
 import { allsponsorType } from "../../../api/index";
 import { mavonEditor } from "mavon-editor";
+import mdamap from "../../amap/amap";
 import "mavon-editor/dist/css/index.css";
 export default {
   name: "markdown",
@@ -42,11 +55,15 @@ export default {
       html: "",
       configs: {},
       sponsorList: [],
-      typeId: ""
+      typeId: "",
+      dialogMapVisible: false,
+      zoom:16,
+      center:[121.406051,31.179695],
     };
   },
   components: {
-    mavonEditor
+    mavonEditor,
+    mdamap
   },
   mounted() {
     console.log("---------------------------")
