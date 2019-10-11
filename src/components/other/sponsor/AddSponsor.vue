@@ -39,7 +39,8 @@
           <el-button id="rightbutton"
                      type="primary"
                      @click="okLocation">确认</el-button>
-          <mdamap ref="myamap">
+          <mdamap ref="myamap"
+                  style="width: 100%">
           </mdamap>
         </el-dialog>
       </div>
