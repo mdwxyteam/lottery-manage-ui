@@ -3,16 +3,17 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-lx-calendar"></i> 表单
+          <i class="el-icon-lx-calendar"></i> 赞助商
         </el-breadcrumb-item>
-        <el-breadcrumb-item>markdown编辑器</el-breadcrumb-item>
+        <el-breadcrumb-item>新增赞助商</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="container">
       <div class="plugins-tips">
         <div class="sm-layout-side-horizontal sm-width-100-per">
           <div class="sm-layout-side-horizontal sm-width-50-per">
-            <el-input placeholder="请输入内容"
+            <el-input v-model="sponsorName"
+                      placeholder="请输入内容"
                       class="sm-width-40-per"></el-input>
 
             <el-select v-model="typeId"
@@ -68,7 +69,7 @@
 }
 </style>
 <script>
-import { allsponsorType } from "../../../api/index";
+import { allsponsorType, addSponsor } from "../../../api/index";
 import { mavonEditor } from "mavon-editor";
 import mdamap from "../../amap/amap";
 import "mavon-editor/dist/css/index.css";
@@ -76,8 +77,9 @@ export default {
   name: "markdown",
   data: function () {
     return {
-      content: "",
-      html: "",
+      sponsorName: null,
+      content: null,
+      html: null,
       configs: {},
       sponsorList: [],
       typeId: "",
@@ -90,7 +92,6 @@ export default {
     mdamap
   },
   mounted () {
-    console.log("---------------------------")
     this.getSponsorType();
   },
   methods: {
@@ -113,9 +114,32 @@ export default {
       this.html = render;
     },
     submit () {
-      console.log(this.content);
-      console.log(this.html);
-      this.$message.success("提交成功！");
+      let that = this;
+      if (!this.poiResult || !this.sponsorName || !this.html || !this.typeId) {
+        // TODO 缺省参数
+        return;
+      }
+      let sponsorObj = null;
+      for (var i = 0; i < this.sponsorList.length; i++) {
+        let spobj = this.sponsorList[i];
+        if (spobj.id == this.typeId) {
+          sponsorObj = spobj;
+          break;
+        }
+      }
+      let locationObj = this.poiResult.item.location.lat + "," + this.poiResult.item.location.lng;
+      let addressObj = this.poiResult.item.district + " " + this.poiResult.item.address + " " + this.poiResult.item.name;
+      debugger
+      addSponsor(this.typeId, sponsorObj.typeName, this.sponsorName, locationObj, addressObj, this.html).then((res) => {
+        // that.$message.success("提交成功！");
+        alert("提交成功！")
+        console.log(res)
+      }).catch((res) => {
+        // that.$message.fail("提交失败！");
+        alert("提交失败！")
+        console.log(res)
+      })
+
     },
     getSponsorType () {
       // this.sponsorList = allsponsorType();
@@ -123,11 +147,8 @@ export default {
       allsponsorType().then((res) => {
 
         const dataObj = res.data;
-        console.log(dataObj);
-        console.log(dataObj.code);
         if (dataObj.code == 0) {
           that.sponsorList = dataObj.data;
-          console.log(that.sponsorList)
         } else {
           //失败
         }
