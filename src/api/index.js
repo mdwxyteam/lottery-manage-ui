@@ -5,6 +5,12 @@ var webURL = 'http://127.0.0.1:8081/web/api'
 var fileURL = 'http://127.0.0.1:8081/lottery'
 
 export const fileUploadURL = 'http://127.0.0.1:8081/lottery/upload/image'
+
+/**赞助商列表 */
+export const sponsor = (page,rows) => {
+    return axios.get(webURL+'/sponsor/page?pageNum='+ page +'&pageSize='+rows)
+}
+
 /**赞助商类型列表 */
 
 export const sponsorType = (page, rows) => {
