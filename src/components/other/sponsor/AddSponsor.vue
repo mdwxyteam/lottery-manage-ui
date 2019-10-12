@@ -69,7 +69,7 @@
 }
 </style>
 <script>
-import { allsponsorType, addSponsor } from "../../../api/index";
+import { allsponsorType, addSponsor, fileUploadURL } from "../../../api/index";
 import { mavonEditor } from "mavon-editor";
 import mdamap from "../../amap/amap";
 import "mavon-editor/dist/css/index.css";
@@ -101,11 +101,15 @@ export default {
       formdata.append("file", $file);
       // 这里没有服务器供大家尝试，可将下面上传接口替换为你自己的服务器接口
       this.$axios({
-        url: "/common/upload",
+        url: fileUploadURL,
         method: "post",
         data: formdata,
         headers: { "Content-Type": "multipart/form-data" }
-      }).then(url => {
+      }).then(res => {
+        if (-1 == res.data.code) {
+          this.$message.success("上传图片失败！");
+        }
+        let url = res.data.data
         this.$refs.md.$img2Url(pos, url);
       });
     },
@@ -114,9 +118,9 @@ export default {
       this.html = render;
     },
     submit () {
-      let that = this;
+      var that = this;
       if (!this.poiResult || !this.sponsorName || !this.html || !this.typeId) {
-        // TODO 缺省参数
+        this.$message.error("缺省参数！");
         return;
       }
       let sponsorObj = null;
@@ -131,12 +135,13 @@ export default {
       let addressObj = this.poiResult.item.district + " " + this.poiResult.item.address + " " + this.poiResult.item.name;
       debugger
       addSponsor(this.typeId, sponsorObj.typeName, this.sponsorName, locationObj, addressObj, this.html).then((res) => {
-        // that.$message.success("提交成功！");
-        alert("提交成功！")
-        console.log(res)
+        this.$message.success("提交成功！");
+        that.typeId = "";
+        that.poiResult = null;
+        that.sponsorName = null;
+        that.that = null;
       }).catch((res) => {
-        // that.$message.fail("提交失败！");
-        alert("提交失败！")
+        this.$message.error("提交失败！");
         console.log(res)
       })
 
@@ -151,9 +156,11 @@ export default {
           that.sponsorList = dataObj.data;
         } else {
           //失败
+          this.$message.error("获取赞助商类型数据失败！");
         }
       }).catch((res) => {
         //失败
+        this.$message.error("获取赞助商类型数据失败！");
       })
     },
     okLocation () {

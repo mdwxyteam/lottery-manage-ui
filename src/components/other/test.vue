@@ -42,13 +42,15 @@ export default {
   methods: {
     getHtml () {
       let that = this;
-      sponsorDetail(3).then((res) => {
+      sponsorDetail(7).then((res) => {
+        this.$message.success("添加成功");
         alert("成功")
         console.log(res);
         let resdata = res.data.data;
         that.html = resdata.detalis;
         console.log(that.html)
       }).catch((res) => {
+
         alert("失败")
       })
     }
