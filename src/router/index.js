@@ -42,6 +42,15 @@ export default new Router({
             require(['../components/other/sponsor/AddSponsor.vue'], resolve),
           meta: { title: '新增赞助商' }
         },
+
+         /**编辑赞助商 */
+        {
+          path: '/editsponsor',
+          component: resolve =>
+            require(['../components/other/sponsor/EditSponsor.vue'], resolve),
+          meta: { title: '编辑赞助商' }
+        },
+
         /**赞助商类型管理 */
         {
           path: '/sponsortype',
@@ -58,6 +67,7 @@ export default new Router({
             ], resolve),
           meta: { title: '新增赞助商类型管理' }
         },
+        
         /**编辑赞助商类型管理 */
         {
           path: '/editsponsortype',
