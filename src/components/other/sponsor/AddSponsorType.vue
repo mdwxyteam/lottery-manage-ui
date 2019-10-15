@@ -20,8 +20,8 @@
       <div class="container">
         <div class="headerTitle">类型信息</div>
         <div class="div-el-form">
-          <el-form-item label="类型名称" prop="typeName" placeholder="请输入类型名称">
-            <el-input v-model="ruleForm.typeName"></el-input>
+          <el-form-item label="类型名称" prop="typeName" >
+            <el-input v-model="ruleForm.typeName" placeholder="请输入类型名称"></el-input>
           </el-form-item>
         </div>
       </div>

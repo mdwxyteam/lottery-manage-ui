@@ -112,7 +112,7 @@ export default {
     return {
       tableData: [],
       cur_page: 1,
-      cur_rows: 4,
+      cur_rows: 10,
       cur_total: 1,
       cur_page_size: 0,
       cur_page_count: 0,
