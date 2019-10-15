@@ -43,7 +43,7 @@ export default new Router({
           meta: { title: '新增赞助商' }
         },
 
-         /**编辑赞助商 */
+        /**编辑赞助商 */
         {
           path: '/editsponsor',
           component: resolve =>
@@ -67,7 +67,7 @@ export default new Router({
             ], resolve),
           meta: { title: '新增赞助商类型管理' }
         },
-        
+
         /**编辑赞助商类型管理 */
         {
           path: '/editsponsortype',
@@ -97,6 +97,13 @@ export default new Router({
           component: resolve =>
             require(['../components/other/prize/EditPrize.vue'], resolve),
           meta: { title: '编辑奖品' }
+        },
+        /**新增活动组件 */
+        {
+          path: '/addActiv',
+          component: resolve =>
+            require(['../components/other/activity/addActiv.vue'], resolve),
+          meta: { title: '添加活动' }
         },
         /**测试组件 */
         {

@@ -110,7 +110,7 @@ export default {
         headers: { "Content-Type": "multipart/form-data" }
       }).then(res => {
         if (-1 == res.data.code) {
-          this.$message.success("上传图片失败！");
+          this.$message.error("上传图片失败！");
         }
         let url = res.data.data
         this.$refs.md.$img2Url(pos, url);

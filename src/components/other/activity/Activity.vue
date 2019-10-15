@@ -11,7 +11,7 @@
           </el-breadcrumb>
         </el-col>
         <el-col :span="2">
-          <router-link :to="{path:'/addActivity',query: {name: '新增活动'}}">
+          <router-link :to="{path:'/addActiv',query: {name: '新增活动'}}">
             <el-button type="primary" icon="el-icon-plus">新增</el-button>
           </router-link>
         </el-col>

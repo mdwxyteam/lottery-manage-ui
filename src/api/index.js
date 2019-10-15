@@ -7,10 +7,26 @@ var fileURL = 'http://127.0.0.1:8081/lottery'
 export const fileUploadURL = 'http://127.0.0.1:8081/lottery/upload/image'
 
 /**赞助商列表 */
-export const sponsor = (page,rows,typeId,sponsorName,status) => {
-    return axios.get(webURL+'/sponsor/condition?pageNum='+ page +'&pageSize='+ rows +'&typeId='+ typeId +'&sponsorName='+ sponsorName +'&status='+status)
+export const sponsor = (page, rows, typeId, sponsorName, status) => {
+  return axios.get(
+    webURL +
+      '/sponsor/condition?pageNum=' +
+      page +
+      '&pageSize=' +
+      rows +
+      '&typeId=' +
+      typeId +
+      '&sponsorName=' +
+      sponsorName +
+      '&status=' +
+      status
+  )
 }
 
+/**通过名字模糊查询赞助商 */
+export const querySponsor = sponsorName => {
+  return axios.get(webURL + '/query/sponsor?sponsorName=' + sponsorName)
+}
 /**赞助商类型列表 */
 
 export const sponsorType = (page, rows) => {
@@ -61,8 +77,8 @@ export const editType = (typeId, typeName) => {
 
 /**更改赞助商状态 */
 export const statusSponsor = (sponsorId, status) => {
-  console.log(sponsorId);
-  console.log(status);
+  console.log(sponsorId)
+  console.log(status)
   var isStatus
   if (status == true) {
     isStatus = 0
