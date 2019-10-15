@@ -33,7 +33,8 @@ export const addSponsor = (
   sponsor,
   location,
   address,
-  detalis
+  detalis,
+  markDown
 ) => {
   return axios.post(webURL + '/add/sponsor', {
     typeId,
@@ -41,7 +42,8 @@ export const addSponsor = (
     sponsor,
     location,
     address,
-    detalis
+    detalis,
+    markDown
   })
 }
 /**新增保存赞助商类型 */

@@ -19,6 +19,9 @@
             <el-select v-model="typeId"
                        class="sm-width-40-per"
                        placeholder="赞助商类型">
+              <el-option selected="true"
+                         label="01"
+                         :value="12"></el-option>
               <el-option v-for="sponsorObj in sponsorList"
                          :key="sponsorObj.typeName"
                          :label="sponsorObj.typeName"
@@ -134,7 +137,7 @@ export default {
       let locationObj = this.poiResult.item.location.lat + "," + this.poiResult.item.location.lng;
       let addressObj = this.poiResult.item.district + " " + this.poiResult.item.address + " " + this.poiResult.item.name;
       debugger
-      addSponsor(this.typeId, sponsorObj.typeName, this.sponsorName, locationObj, addressObj, this.html).then((res) => {
+      addSponsor(this.typeId, sponsorObj.typeName, this.sponsorName, locationObj, addressObj, this.html, this.content).then((res) => {
         this.$message.success("提交成功！");
         that.typeId = "";
         that.poiResult = null;
