@@ -1,47 +1,164 @@
 <template>
-  <el-form ref="form"
-           :model="form"
-           label-width="80px">
-    <el-form-item label="赞助商">
-      <el-select v-model="value"
-                 filterable
-                 remote
-                 reserve-keyword
-                 placeholder="请输入关键词"
-                 :remote-method="remoteSearch"
-                 :loading="loading">
+  <div>
+    <el-form ref="form"
+             :model="form"
+             label-width="80px">
+      <el-form-item label="赞助商">
+        <el-select v-model="value"
+                   filterable
+                   remote
+                   reserve-keyword
+                   placeholder="请输入关键词"
+                   :remote-method="remoteSearch"
+                   :loading="loading">
 
-        <el-option v-for="sponsorObj in sponsorList"
-                   :key="sponsorObj.id"
-                   :label="sponsorObj.sponsorName"
-                   :value="sponsorObj.id"></el-option>
-      </el-select>
-    </el-form-item>
+          <el-option v-for="sponsorObj in sponsorList"
+                     :key="sponsorObj.id"
+                     :label="sponsorObj.sponsorName"
+                     :value="sponsorObj.id"></el-option>
+        </el-select>
+      </el-form-item>
 
-    <el-form-item label="活动性质">
-      <el-radio-group v-model="form.conditionType">
-        <el-radio label="1">时间限制</el-radio>
-        <el-radio label="2">人数限制</el-radio>
-      </el-radio-group>
-    </el-form-item>
-    <el-form-item label="特殊资源">
-      <el-radio-group v-model="form.resource">
-        <el-radio label="线上品牌商赞助"></el-radio>
-        <el-radio label="线下场地免费"></el-radio>
-      </el-radio-group>
-    </el-form-item>
-    <el-form-item label="活动形式">
-      <el-input type="textarea"
-                v-model="form.desc"></el-input>
-    </el-form-item>
-    <el-form-item>
-      <el-button type="primary"
-                 @click="onSubmit">立即创建</el-button>
-      <el-button>取消</el-button>
-    </el-form-item>
-  </el-form>
+      <el-form-item label="活动性质"
+                    class="">
+        <el-radio-group v-model="form.conditionType"
+                        class=""
+                        @change="changeRadio">
+          <el-radio label="1">时间限制</el-radio>
+          <el-radio label="2">人数限制</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item v-if="chaNum == 1"
+                    label="">
+        <!-- <el-input placeholder="开奖时间"
+                v-model="input"
+                class="sm-width-30-per"> -->
+        <!-- </el-input> -->
+        <el-date-picker v-model="form.condition"
+                        type="datetime"
+                        placeholder="选择日期时间"
+                        align="right"
+                        format="yyyy-MM-dd HH:mm:ss"
+                        value-format="yyyy-MM-dd HH:mm:ss"
+                        :picker-options="pickerOptions"
+                        @change="changeTime">
+        </el-date-picker>
+        <el-input placeholder="请输入内容"
+                  v-model="form.conditionalDescription"
+                  class="sm-width-30-per">
+        </el-input>
+      </el-form-item>
+      <el-form-item v-if="chaNum == 2"
+                    label="">
+        <el-input-number placeholder="参与人数"
+                         v-model="form.condition"
+                         @change="numberChange"
+                         :min="1"
+                         :max="1000000000"
+                         class="sm-width-30-per">
+        </el-input-number>
+        <el-input placeholder="请输入内容"
+                  v-model="form.conditionalDescription"
+                  class="sm-width-30-per">
+        </el-input>
+      </el-form-item>
+      <el-form-item label="参与条件">
+        <el-input v-model="form.addCondition"
+                  class="sm-width-30-per"
+                  placeholder="参与条件"></el-input>
+      </el-form-item>
+      <el-form-item label="赞助要求">
+        <el-input type="textarea"
+                  :rows="2"
+                  class="sm-width-40-per"
+                  placeholder="请输入内容"
+                  v-model="form.sponsorClaim">
+        </el-input>
+      </el-form-item>
+      <el-form-item label="添加奖品">
+        <div style="width:100%;height: 256px;"
+             class=" sm-layout-left-center">
+          <div @click="addPrize"
+               :class="borderStyle"
+               style="width:200px;height:200px;border-radius:5px;"
+               class=" sm-layout-center-horizontal">
+            <i class="el-icon-plus"></i></div>
+        </div>
+      </el-form-item>
+      <el-form-item label="活动形式">
+        <el-input type="textarea"
+                  v-model="form.desc"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary"
+                   @click="onSubmit">立即创建</el-button>
+        <el-button>取消</el-button>
+      </el-form-item>
+    </el-form>
+
+    <!-- 添加奖品模态框 -->
+    <el-dialog title="添加奖品"
+               :visible.sync="prizwFormVisible">
+      <el-form :model="prizeForm">
+        <el-form-item>
+          <el-button type="primary"
+                     icon="el-icon-plus"
+                     circle
+                     @click="chosePrizwVisible = true"></el-button>
+        </el-form-item>
+        <el-form-item>
+          <!-- <div class="debug ms-layout-wrap-vertical"
+               style="widht:256px;height:206px;"> -->
+          <img src=""
+               style="width:380px;height:230px;" />
+
+          <!-- </div> -->
+        </el-form-item>
+        <el-form-item label="活动名称"
+                      :label-width="formLabelWidth">
+          <el-input v-model="prizeForm.prizeName"
+                    autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="奖品数量"
+                      :label-width="formLabelWidth">
+          <el-input v-model="prizeForm.prizeCount"
+                    autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="获取条件"
+                      :label-width="formLabelWidth">
+          <el-input v-model="prizeForm.ranking"
+                    autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer"
+           class="dialog-footer">
+        <el-button @click="prizwFormVisible = false">取 消</el-button>
+        <el-button type="primary"
+                   @click="prizwFormVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 选择奖品模态框 -->
+    <el-dialog title="选择奖品"
+               :visible.sync="chosePrizwVisible">
+      <div style="width:760px; height:560px;"
+           class="debug"></div>
+      <div slot="footer"
+           class="dialog-footer">
+        <el-button @click="chosePrizwVisible = false">取 消</el-button>
+        <el-button type="primary"
+                   @click="chosePrizwVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
+  </div>
 </template>
-<style scoped>
+<style>
+.gray_border {
+  border: 1px dashed #c0c0c0;
+}
+.blue_border {
+  border: 1px dashed #409eff;
+}
 </style>
 <script>
 import { querySponsor } from "../../../api/index";
@@ -56,13 +173,50 @@ export default {
         address: '',
         conditionType: false,
         condition: '',
+        conditionalDescription: null,
         sponsorClaim: '',
-        state: '',
-        adv: ''
-
+        state: 1,
+        adv: '',
+        addCondition: ''
       },
       value: '',
       loading: false,
+      chaNum: 1,
+      borderStyle: 'gray_border',
+      prizwFormVisible: false,
+      formLabelWidth: '120px',
+      chosePrizwVisible: false,
+      prizeForm: {
+        prizeName: null,
+        prizeUrl: null,
+        prizeCount: 0,
+        ranking: null,
+      },
+      chosePrize: {
+
+      },
+      pickerOptions: {
+        shortcuts: [{
+          text: '今天',
+          onClick (picker) {
+            picker.$emit('pick', new Date());
+          }
+        }, {
+          text: '昨天',
+          onClick (picker) {
+            const date = new Date();
+            date.setTime(date.getTime() - 3600 * 1000 * 24);
+            picker.$emit('pick', date);
+          }
+        }, {
+          text: '一周前',
+          onClick (picker) {
+            const date = new Date();
+            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+            picker.$emit('pick', date);
+          }
+        }]
+      },
     }
   },
   methods: {
@@ -85,6 +239,27 @@ export default {
         that.loading = false;
         this.$message.error("搜索失败！");
       })
+    },
+    changeTime (res) {
+      console.log(res)
+      this.form.conditionalDescription = res;
+    },
+    numberChange (res) {
+      this.form.conditionalDescription = res;
+    },
+    changeRadio (res) {
+
+      this.form.conditionalDescription = null;
+      this.form.condition = null;
+      this.chaNum = res;
+    },
+    addPrize (res) {
+      this.borderStyle = "blue_border";
+      let that = this;
+      setTimeout(function () {
+        that.borderStyle = "gray_border";
+      }, 200)
+      this.prizwFormVisible = true;
     }
   }
 }

@@ -1,5 +1,8 @@
 <template>
-  <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
+  <el-form :model="ruleForm"
+           :rules="rules"
+           ref="ruleForm"
+           label-width="100px">
     <div>
       <div class="crumbs">
         <el-row>
@@ -12,7 +15,8 @@
             </el-breadcrumb>
           </el-col>
           <el-col :span="2">
-            <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+            <el-button type="primary"
+                       @click="submitForm('ruleForm')">保存</el-button>
           </el-col>
         </el-row>
       </div>
@@ -20,22 +24,29 @@
       <div class="container">
         <div class="headerTitle">奖品信息</div>
         <div>
-          <el-form-item label="奖品描述" prop="prizeDescription" placeholder="请输入奖品描述">
-            <el-input v-model="ruleForm.prizeDescription" type="textarea"></el-input>
+          <el-form-item label="奖品描述"
+                        prop="prizeDescription"
+                        placeholder="请输入奖品描述">
+            <el-input v-model="ruleForm.prizeDescription"
+                      type="textarea"></el-input>
           </el-form-item>
           <el-form-item label="奖品数量">
-            <el-input-number v-model="ruleForm.prizeCount" :min="1" :max="100"></el-input-number>
+            <el-input-number v-model="ruleForm.prizeCount"
+                             :min="1"
+                             :max="100"></el-input-number>
           </el-form-item>
-          <el-form-item label="奖品图片" prop="imgUrl">
-            <el-upload
-              class="avatar-uploader"
-              :action="file"
-              :show-file-list="false"
-              :on-success="handleAvatarSuccess"
-              :before-upload="beforeAvatarUpload"
-            >
-              <img v-if="imgUrl" :src="imgUrl" class="avatar" />
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          <el-form-item label="奖品图片"
+                        prop="imgUrl">
+            <el-upload class="avatar-uploader"
+                       :action="file"
+                       :show-file-list="false"
+                       :on-success="handleAvatarSuccess"
+                       :before-upload="beforeAvatarUpload">
+              <img v-if="imgUrl"
+                   :src="imgUrl"
+                   class="avatar" />
+              <i v-else
+                 class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </el-form-item>
         </div>
@@ -49,7 +60,7 @@ import { addPrize } from "../../../api/index";
 import { file } from "../../../api/index";
 export default {
   name: "add",
-  data() {
+  data () {
     return {
       file: file,
       iconFile: "",
@@ -67,31 +78,30 @@ export default {
   },
   methods: {
     /**图片 */
-    handleAvatarSuccess(res, file) {
-      debugger
+    handleAvatarSuccess (res, file) {
       this.imgUrl = URL.createObjectURL(file.raw);
 
       this.iconFile = file.response.data;
     },
-    beforeAvatarUpload(file) {
+    beforeAvatarUpload (file) {
       debugger
       const isJPG = file.type === "image/jpeg";
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isJPG) {
-        this.$message.error("上传头像图片只能是 JPG 格式!");
+        this.$message.error("上传图片只能是 JPG 格式!");
       }
       if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
+        this.$message.error("上传图片大小不能超过 2MB!");
       }
       return isJPG && isLt2M;
     },
-    submitForm(formName) {
+    submitForm (formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-             if(this.iconFile == ""){
-                this.$message.error("请上传图片");
-                return false;
-             }
+          if (this.iconFile == "") {
+            this.$message.error("请上传图片");
+            return false;
+          }
           addPrize(
             this.ruleForm.prizeDescription,
             this.iconFile,
