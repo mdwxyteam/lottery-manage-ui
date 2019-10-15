@@ -75,8 +75,7 @@
 </template>
 
 <script>
-import { sponsorType } from "../../../api/index";
-import { statusType } from "../../../api/index";
+import { sponsorType,statusType } from "../../../api/index";
 export default {
   data() {
     return {
@@ -165,7 +164,7 @@ export default {
       });
     },
 
-   /**状态启用 */
+   /**状态*/
     handleStatus(row) {
       if (row.isStatus == true) {
         this.$confirm("禁用该类型, 是否继续?", "提示", {

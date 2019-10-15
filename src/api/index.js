@@ -7,8 +7,8 @@ var fileURL = 'http://127.0.0.1:8081/lottery'
 export const fileUploadURL = 'http://127.0.0.1:8081/lottery/upload/image'
 
 /**赞助商列表 */
-export const sponsor = (page,rows) => {
-    return axios.get(webURL+'/sponsor/page?pageNum='+ page +'&pageSize='+rows)
+export const sponsor = (page,rows,typeId,sponsorName,status) => {
+    return axios.get(webURL+'/sponsor/condition?pageNum='+ page +'&pageSize='+ rows +'&typeId='+ typeId +'&sponsorName='+ sponsorName +'&status='+status)
 }
 
 /**赞助商类型列表 */
@@ -56,8 +56,22 @@ export const editType = (typeId, typeName) => {
     webURL + '/edit/type?typeId=' + typeId + '&typeName=' + typeName
   )
 }
-/**更改赞助商类型状态 */
 
+/**更改赞助商状态 */
+export const statusSponsor = (sponsorId, status) => {
+  console.log(sponsorId);
+  console.log(status);
+  var isStatus
+  if (status == true) {
+    isStatus = 0
+  } else if (status == false) {
+    isStatus = 1
+  }
+  return axios.post(
+    webURL + '/del/sponsor?id=' + sponsorId + '&status=' + isStatus
+  )
+}
+/**更改赞助商类型状态 */
 export const statusType = (typeId, status) => {
   var isStatus
   if (status == true) {

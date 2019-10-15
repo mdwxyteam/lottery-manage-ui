@@ -13,7 +13,7 @@
         <div class="sm-layout-side-horizontal sm-width-100-per">
           <div class="sm-layout-side-horizontal sm-width-50-per">
             <el-input v-model="sponsorName"
-                      placeholder="请输入名称"
+                      placeholder="请输入赞助商名称"
                       class="sm-width-40-per"></el-input>
 
             <el-select v-model="typeId"

@@ -26,7 +26,7 @@
               @click="handleDelAll"
             >批量删除</el-button>
           </el-col>
-          <el-col :span="3" :offset="6">
+          <el-col :span="3" :offset="3">
             <el-select v-model="typeId" placeholder="请选择赞助商类型">
               <el-option
                 v-for="sponsorObj in sponsorList"
@@ -34,6 +34,17 @@
                 :label="sponsorObj.typeName"
                 :value="sponsorObj.id"
               ></el-option>
+            </el-select>
+          </el-col>
+           <el-col :span="3">
+            <el-select v-model="status" placeholder="请选择启用禁用">
+             <el-option
+                v-for="item in statusOption"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+
             </el-select>
           </el-col>
           <el-col :span="5">
@@ -63,7 +74,7 @@
             <el-switch
               class="status"
               slot="reference"
-              v-model="scope.row.isStatus"
+              v-model="scope.row.status"
               disabled
               @click.native="handleStatus(scope.row)"
             ></el-switch>
@@ -94,22 +105,34 @@
 </template>
 
 <script>
-import { sponsor ,allsponsorType} from "../../../api/index";
+import { sponsor ,allsponsorType,statusSponsor} from "../../../api/index";
 export default {
   name: "sponsor",
   data() {
     return {
       tableData: [],
       cur_page: 1,
-      cur_rows: 10,
+      cur_rows: 4,
       cur_total: 1,
       cur_page_size: 0,
       cur_page_count: 0,
       cur_page_clic: false,
+      is_search: false,
       multipleSelection: [],
       sponsorList: [],
       typeId: "",
       select_word:"",
+      status:"1",
+      statusOption: [
+        {
+          value: "0",
+          label: "禁用"
+        },
+        {
+          value: "1",
+          label: "启用"
+        },
+      ]
     };
   },
   created() {
@@ -124,30 +147,50 @@ export default {
         return;
       }
       this.cur_page = e;
-      this.getData();
+      this.getData(this.typeId,this.select_word,this.status);
     },
     prevPage: function(e) {
       this.cur_page -= 1;
-      this.getData();
+      this.getData(this.typeId,this.select_word,this.status);
       this.cur_page_clic = true;
     },
     nextPage: function(e) {
       this.cur_page += 1;
-      this.getData();
+      this.getData(this.typeId,this.select_word,this.status);
       this.cur_page_clic = true;
     },
-    currentChange: function(e) {
-      if (this.cur_page_clic) {
-        this.cur_page_clic = false;
-        return;
-      }
-      this.cur_page = e;
-      this.getData();
-    },
+  
     /**获取数据 */
-    getData() {
-      sponsor(this.cur_page, this.cur_rows).then(res => {
+    getData(typeId,select_word,status) {
+      console.log(typeId);
+      console.log(select_word);
+      console.log(status);
+      if (!typeId) {}
+      if (typeof(typeId) == "undefined") {
+        typeId = "";
+      }
+      if (typeof(select_word) == "undefined") {
+        select_word = "";
+      }
+        if (typeof(status) == "undefined") {
+        status = 1;
+      }
+      sponsor(this.cur_page, this.cur_rows,typeId,select_word, status).then(res => {
         this.tableData = res.data.data.list;
+        this.cur_total = res.data.data.total;
+        this.cur_page_size = res.data.data.list.length;
+        for (var i = 0; i < this.tableData.length; i++) {
+            console.log(this.tableData[i].status);
+          switch (this.tableData[i].status) {
+            case 0:
+              this.tableData[i].status = false;
+              break;
+            case 1:
+              this.tableData[i].status = true;
+              break;
+            default:
+          }
+        }
       });
     },
 
@@ -186,6 +229,71 @@ export default {
         this.add0(s)
       );
     },
+       /**查询*/
+    search() {
+      this.getData(this.typeId,this.select_word, this.status);
+      this.is_search = true;
+    },
+    /**重置*/
+    resert() {
+      this.typeId="";
+      this.select_word ="";
+      this.status = "1";
+      this.getData();
+    },
+
+     /**状态*/
+    handleStatus(row) {
+      if (row.status == true) {
+        this.$confirm("禁用该类型, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(() => {
+            statusSponsor(row.id, row.status).then(resoponse => {
+              if (resoponse.status == 200) {
+                this.$message({
+                  type: "success",
+                  message: "禁用成功!"
+                });
+                this.getData();
+              }
+            });
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消禁用"
+            });
+          });
+
+      } else if (row.status == false) {
+        this.$confirm("启用该类型, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(() => {
+            statusSponsor(row.id, row.status).then(resoponse => {
+              if (resoponse.status == 200) {
+                this.$message({
+                  type: "success",
+                  message: "启用成功!"
+                });
+              this.getData();
+              }
+            });
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消启用"
+            });
+          });
+      }
+    },
+
     /**新增*/
     add() {
       this.$router.push({
