@@ -104,7 +104,7 @@
           <el-button type="primary"
                      icon="el-icon-plus"
                      circle
-                     @click="chosePrizwVisible = true"></el-button>
+                     @click="chosePrizw"></el-button>
         </el-form-item>
         <el-form-item>
           <!-- <div class="debug ms-layout-wrap-vertical"
@@ -142,7 +142,25 @@
     <el-dialog title="选择奖品"
                :visible.sync="chosePrizwVisible">
       <div style="width:760px; height:560px;"
-           class="debug"></div>
+           class="">
+        <div class=" sm-width-100-per sm-height-10-per sm-layout-center-horizontal">
+
+          <el-autocomplete v-model="prizeDiscription"
+                           :fetch-suggestions="querySearchAsync"
+                           placeholder="请输入内容"
+                           @select="handleSelect"></el-autocomplete>
+        </div>
+        <div class="sm-width-100-per"
+             style="margin: 0 auto;">
+          <div class="item"
+               v-for="item in PrizeObj.selectPrizeList"
+               :key="item.id">
+            <img :src="item.iconUrl" />
+            <div class="sm-width-100-per sm-layout-center-horizontal "
+                 style="height:26px;">{{item.prizeDescription}}</div>
+          </div>
+        </div>
+      </div>
       <div slot="footer"
            class="dialog-footer">
         <el-button @click="chosePrizwVisible = false">取 消</el-button>
@@ -159,9 +177,20 @@
 .blue_border {
   border: 1px dashed #409eff;
 }
+.content {
+  width: 1000px;
+  margin: 0 2px;
+}
+.item {
+  width: 23%;
+  float: left;
+}
+.item img {
+  width: 100%;
+}
 </style>
 <script>
-import { querySponsor } from "../../../api/index";
+import { querySponsor, queryByPrizeDescription } from "../../../api/index";
 export default {
   data () {
     return {
@@ -194,6 +223,12 @@ export default {
       },
       chosePrize: {
 
+      },
+      prizeDiscription: '',//查询需要的model
+      PrizeObj: {
+        pageNum: 1,
+        pageSize: 15,
+        selectPrizeList: [],
       },
       pickerOptions: {
         shortcuts: [{
@@ -260,6 +295,44 @@ export default {
         that.borderStyle = "gray_border";
       }, 200)
       this.prizwFormVisible = true;
+    },
+    chosePrizw () {
+      this.chosePrizwVisible = true;
+      let that = this;
+      // if (typeof (typeId) == "undefined
+      queryByPrizeDescription(that.PrizeObj.pageNum, that.PrizeObj.pageSize, '').then(res => {
+        var resPonData = res.data;
+        if (resPonData.code == 0) {
+          var pageObj = resPonData.data;
+          that.PrizeObj.selectPrizeList = pageObj.list;
+        } else {
+          //查询失败
+        }
+      }).catch(res => {
+
+      })
+    },
+    querySearchAsync (queryString, cb) {
+      let that = this;
+      // if (!queryString) {
+      //   return;
+      // }
+      queryByPrizeDescription(that.PrizeObj.pageNum, that.PrizeObj.pageSize, queryString).then(res => {
+        var resPonData = res.data;
+        if (resPonData.code == 0) {
+          var pageObj = resPonData.data;
+          that.PrizeObj.selectPrizeList = pageObj.list;
+        } else {
+          //查询失败
+        }
+      }).catch(res => {
+
+      })
+      console.log(queryString)
+      console.log(cb)
+    },
+    handleSelect (item) {
+      console.log(item);
     }
   }
 }

@@ -120,6 +120,18 @@ export const statusType = (typeId, status) => {
     webURL + '/status/type?typeId=' + typeId + '&isStatus=' + isStatus
   )
 }
+/**条件分页查询奖品 */
+export const queryByPrizeDescription = (page, pageSize, prizeDescription) => {
+  return axios.get(
+    webURL +
+      '/page/description/prize?pageNum=' +
+      page +
+      '&pageSize=' +
+      pageSize +
+      '&prizeDescription=' +
+      prizeDescription
+  )
+}
 /**新增保存奖品 */
 
 export const addPrize = (prizeDescription, iconUrl, prizeCount) => {
