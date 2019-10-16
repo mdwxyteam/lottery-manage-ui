@@ -4,7 +4,7 @@ var webURL = 'http://127.0.0.1:8081/web/api'
 
 var fileURL = 'http://127.0.0.1:8081/lottery'
 
-export const fileUploadURL = 'http://127.0.0.1:8089/lottery/upload/image'
+export const fileUploadURL = 'http://127.0.0.1:8081/lottery/upload/image'
 
 /**赞助商列表 */
 export const sponsor = (page, rows, typeId, sponsorName, status) => {
@@ -73,7 +73,6 @@ export const updateSponsor = (
   detalis,
   markDown
 ) => {
-   console.log(typeId);
   return axios.post(webURL + '/update/sponsor', {
     id,
     typeId,
