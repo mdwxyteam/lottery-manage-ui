@@ -69,6 +69,7 @@
         <el-table-column prop="type" label="赞助商类型"></el-table-column>
         <el-table-column prop="address" label="地点" width="240"></el-table-column>
         <el-table-column prop="creatTime" label="创建时间" :formatter="getTime" width="180"></el-table-column>
+        <!-- <el-table-column prop="detalis" v-show="false"></el-table-column> -->
         <el-table-column label="启用禁用" width="120">
           <template slot-scope="scope">
             <el-switch
@@ -162,9 +163,6 @@ export default {
   
     /**获取数据 */
     getData(typeId,select_word,status) {
-      console.log(typeId);
-      console.log(select_word);
-      console.log(status);
       if (!typeId) {}
       if (typeof(typeId) == "undefined") {
         typeId = "";
@@ -306,7 +304,6 @@ export default {
 
     /**编辑*/
     edit(row) {
-      console.log(row.type);
       this.$router.push({
         path: "/editsponsor",
         query: {
@@ -315,7 +312,8 @@ export default {
           typeName: row.type,
           typeId: row.typeId,
           sponsorName: row.sponsorName,
-          address:row.address
+          address:row.address,
+          detalis:row.detalis
         }
       });
     },

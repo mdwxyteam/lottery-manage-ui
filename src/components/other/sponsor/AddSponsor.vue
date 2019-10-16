@@ -174,15 +174,14 @@ export default {
           this.content
         )
           .then(res => {
-            this.$message.success("提交成功！");
+            this.$message.success("添加成功！");
             this.poiResult = null;
             this.ruleForm.sponsorName = "";
             this.html = null;
             this.content = "";
           })
           .catch(res => {
-            this.$message.error("提交失败！");
-            console.log(res);
+            this.$message.error("添加失败！");
           });
       });
     },

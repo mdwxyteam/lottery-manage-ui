@@ -4,7 +4,7 @@ var webURL = 'http://127.0.0.1:8081/web/api'
 
 var fileURL = 'http://127.0.0.1:8081/lottery'
 
-export const fileUploadURL = 'http://127.0.0.1:8081/lottery/upload/image'
+export const fileUploadURL = 'http://127.0.0.1:8089/lottery/upload/image'
 
 /**赞助商列表 */
 export const sponsor = (page, rows, typeId, sponsorName, status) => {
@@ -62,8 +62,30 @@ export const addSponsor = (
     markDown
   })
 }
+/**更新赞助商 */
+export const updateSponsor = (
+  id,
+  typeId,
+  type,
+  sponsor,
+  location,
+  address,
+  detalis,
+  markDown
+) => {
+   console.log(typeId);
+  return axios.post(webURL + '/update/sponsor', {
+    id,
+    typeId,
+    type,
+    sponsor,
+    location,
+    address,
+    detalis,
+    markDown
+  })
+}
 /**新增保存赞助商类型 */
-
 export const addType = type => {
   return axios.post(webURL + '/add/type?type=' + type)
 }
@@ -77,8 +99,6 @@ export const editType = (typeId, typeName) => {
 
 /**更改赞助商状态 */
 export const statusSponsor = (sponsorId, status) => {
-  console.log(sponsorId)
-  console.log(status)
   var isStatus
   if (status == true) {
     isStatus = 0

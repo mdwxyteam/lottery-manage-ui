@@ -42,7 +42,7 @@ export default {
   methods: {
     getHtml () {
       let that = this;
-      sponsorDetail(9).then((res) => {
+      sponsorDetail(10).then((res) => {
         this.$message.success("添加成功");
         alert("成功")
         console.log(res);
