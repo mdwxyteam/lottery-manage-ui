@@ -1,5 +1,5 @@
 <template>
-  <div>
+   <div>
     <div class="crumbs">
       <el-row>
         <el-col :span="22">
@@ -18,15 +18,17 @@
       </el-row>
     </div>
     <div class="container">
-      <div class="handle-box">
-        <el-row :gutter="20">
-          <el-col :span="6">
-            <el-button type="danger"
-                       icon="el-icon-delete"
-                       class="handle-del mr10"
-                       @click="handleDelAll">批量删除</el-button>
-          </el-col>
-          <el-col :span="3"
+       <div class="handle-box">
+          <el-row :gutter="20">
+            <el-col :span="6">
+              <el-button
+                type="danger"
+                icon="el-icon-delete"
+                class="handle-del mr10"
+                @click="handleDelAll"
+              >批量删除</el-button>
+            </el-col>
+              <el-col :span="3"
                   :offset="3">
             <el-select v-model="typeId"
                        placeholder="请选择赞助商类型">
@@ -59,9 +61,9 @@
                        icon="el-icon-refresh"
                        @click="resert">重置</el-button>
           </el-col>
-        </el-row>
-      </div>
-      <el-table :data="tableData"
+          </el-row>
+        </div>
+          <el-table :data="tableData"
                 border
                 class="table"
                 ref="multipleTable"
@@ -83,7 +85,6 @@
                          label="创建时间"
                          :formatter="getTime"
                          width="180"></el-table-column>
-        <!-- <el-table-column prop="detalis" v-show="false"></el-table-column> -->
         <el-table-column label="启用禁用"
                          width="120">
           <template slot-scope="scope">
@@ -107,17 +108,20 @@
           </template>
         </el-table-column>
       </el-table>
-    </div>
-    <div class="pagination sm-margin-top-1rem">
-      <el-pagination background
-                     layout="prev, pager, next"
-                     :page-size="cur_rows"
-                     :total="cur_total"
-                     :page-count="cur_page_count"
-                     :current-page="cur_page"
-                     @current-change="currentChange"
-                     @prev-click="prevPage"
-                     @next-click="nextPage"></el-pagination>
+      </div>
+      <div class="pagination sm-margin-top-1rem">
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          :page-size="cur_rows"
+          :total="cur_total"
+          :page-count="cur_page_count"
+          :current-page="cur_page"
+          @current-change="currentChange"
+          @prev-click="prevPage"
+          @next-click="nextPage"
+        ></el-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -125,8 +129,7 @@
 <script>
 import { sponsor, allsponsorType, statusSponsor } from "../../../api/index";
 export default {
-  name: "sponsor",
-  data () {
+  data() {
     return {
       tableData: [],
       cur_page: 1,
@@ -153,13 +156,13 @@ export default {
       ]
     };
   },
-  created () {
+  created() {
     this.getData();
     this.getSponsorType();
   },
   methods: {
     /**分页导航 */
-    currentChange (e) {
+   currentChange (e) {
       if (this.cur_page_clic) {
         this.cur_page_clic = false;
         return;
@@ -179,7 +182,7 @@ export default {
     },
 
     /**获取数据 */
-    getData (typeId, select_word, status) {
+   getData (typeId, select_word, status) {
       if (!typeId) { }
       if (typeof (typeId) == "undefined") {
         typeId = "";
@@ -195,7 +198,6 @@ export default {
         this.cur_total = res.data.data.total;
         this.cur_page_size = res.data.data.list.length;
         for (var i = 0; i < this.tableData.length; i++) {
-          console.log(this.tableData[i].status);
           switch (this.tableData[i].status) {
             case 0:
               this.tableData[i].status = false;
@@ -209,7 +211,7 @@ export default {
       });
     },
 
-    /**获取赞助商类型 */
+     /**获取赞助商类型 */
     getSponsorType () {
       allsponsorType().then((res) => {
         const dataObj = res.data;
@@ -218,6 +220,7 @@ export default {
         }
       })
     },
+
     /**时间解析*/
     add0 (m) {
       return m < 10 ? "0" + m : m;
@@ -244,7 +247,36 @@ export default {
         this.add0(s)
       );
     },
-    /**查询*/
+    
+     /**新增*/
+      add () {
+      this.$router.push({
+        path: "/addsponsor",
+        query: {
+          name: "新增赞助商"
+        }
+      });
+    },
+
+    /**编辑 */
+    edit (row) {
+      this.$router.push({
+        path: "/editsponsor",
+        query: {
+          name: "编辑赞助商",
+          id: row.id,
+          typeName: row.type,
+          typeId: row.typeId,
+          sponsorName: row.sponsorName,
+          address: row.address,
+          markDown: row.markDown,
+          detalis: row.detalis,
+          location: row.location
+        }
+      });
+    },
+
+      /**查询*/
     search () {
       this.getData(this.typeId, this.select_word, this.status);
       this.is_search = true;
@@ -257,8 +289,9 @@ export default {
       this.getData();
     },
 
-    /**状态*/
-    handleStatus (row) {
+
+   /**状态*/
+     handleStatus (row) {
       if (row.status == true) {
         this.$confirm("禁用该类型, 是否继续?", "提示", {
           confirmButtonText: "确定",
@@ -309,43 +342,63 @@ export default {
       }
     },
 
-    /**新增*/
-    add () {
-      this.$router.push({
-        path: "/addsponsor",
-        query: {
-          name: "新增赞助商"
-        }
-      });
-    },
-
-    /**编辑*/
-    edit (row) {
-      this.$router.push({
-        path: "/editsponsor",
-        query: {
-          name: "编辑赞助商",
-          id: row.id,
-          typeName: row.type,
-          typeId: row.typeId,
-          sponsorName: row.sponsorName,
-          address: row.address,
-          markDown: row.markDown,
-          detalis: row.detalis,
-          location: row.location
-        }
-      });
+    /**单个删除 */
+    handleDelete(row) {
+      this.$confirm("删除该类型, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.$message({
+            type: "success",
+            message: "删除成功!"
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+          row.isStatus = false;
+        });
     },
 
     /**批量删除*/
-    handleDelAll () {
+    handleDelAll() {
       var length = this.multipleSelection.length;
       if (length == 0) {
         this.$message.error("请选择一条数据");
         return;
       }
+      var ids = new Array();
+      for (var i = 0; i < length; i++) {
+        ids.push(this.multipleSelection[i].id);
+      }
+      this.$confirm("删除这" + length + "个类型, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          del(ids).then(resoponse => {
+            if (resoponse.status == 200) {
+              this.$message({
+                type: "success",
+                message: "删除成功!"
+              });
+            }
+            this.getData();
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     },
-    handleSelectionChange (e) {
+      handleSelectionChange(e) {
       this.multipleSelection = e;
     }
   }

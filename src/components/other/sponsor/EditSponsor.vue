@@ -159,9 +159,9 @@ export default {
       this.html = render;
     },
     submitForm (formName) {
-      let that = this;
       this.$refs[formName].validate(valid => {
-        debugger;
+      if (valid) {
+        let that = this;
         let sponsorTypeObj = null;
         for (var i = 0; i < that.sponsorTypeList.length; i++) {
           let spoTypebj = that.sponsorTypeList[i];
@@ -217,6 +217,7 @@ export default {
             console.log(res)
             that.$message.error("更新失败！");
           });
+        }
       });
     },
     getSponsorType () {
