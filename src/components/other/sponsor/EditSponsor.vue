@@ -11,7 +11,7 @@
               <el-breadcrumb-item>
                 <i class="el-icon-lx-calendar"></i> 赞助商
               </el-breadcrumb-item>
-              <el-breadcrumb-item>新增赞助商</el-breadcrumb-item>
+            <el-breadcrumb-item>{{this.$route.query.name}}</el-breadcrumb-item>
             </el-breadcrumb>
           </el-col>
           <el-col :span="2">
@@ -214,7 +214,6 @@ export default {
           that.oldContent.typeId = that.ruleForm.typeId;
         })
           .catch(res => {
-            console.log(res)
             that.$message.error("更新失败！");
           });
         }

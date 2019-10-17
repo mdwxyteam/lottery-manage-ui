@@ -51,6 +51,14 @@ export default new Router({
           meta: { title: '编辑赞助商' }
         },
 
+          /**赞助商详情 */
+          {
+            path: '/detailsponsor',
+            component: resolve =>
+              require(['../components/other/sponsor/DetailSponsor.vue'], resolve),
+            meta: { title: '赞助商详情' }
+          },
+
         /**赞助商类型管理 */
         {
           path: '/sponsortype',

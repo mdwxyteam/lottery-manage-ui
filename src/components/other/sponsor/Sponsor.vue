@@ -99,6 +99,9 @@
                          width="180"
                          align="center">
           <template slot-scope="scope">
+              <el-button type="text"
+                       icon="el-icon-view"
+                       @click="detail(scope.row)">详情</el-button>
             <el-button type="text"
                        icon="el-icon-edit"
                        @click="edit(scope.row)">编辑</el-button>
@@ -272,6 +275,17 @@ export default {
           markDown: row.markDown,
           detalis: row.detalis,
           location: row.location
+        }
+      });
+    },
+
+    /**详情 */
+    detail (row) {
+      this.$router.push({
+        path: "/detailsponsor",
+        query: {
+          name: "赞助商详情",
+          id: row.id,
         }
       });
     },
