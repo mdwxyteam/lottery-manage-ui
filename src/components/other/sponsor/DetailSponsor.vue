@@ -16,10 +16,15 @@
       <div class="top">
         <h2 class="sm-layout-center-horizontal">{{sponsorName}}</h2>
         <div class="ms-layout-center-wrap-horizontal">
-            <h4 class="creatTime sm-width-25-per">创建时间：{{creatTime}}</h4>
-            <h4 class="creatTime  sm-width-15-per">赞助商类型：{{typeName}}</h4>
-            <h4 class="creatTime">地址：{{address}}</h4>
+            <h4 class="creatTime sm-width-25-per" style="width:240px;">创建时间：{{creatTime}}</h4>
+            <h4 class="creatTime  sm-width-15-per" style="width:240px;">赞助商类型：{{typeName}}</h4>
         </div>
+         <div class="ms-layout-center-wrap-horizontal" style="margin-top:-20px;">
+           <h4 class="creatTime">地址：{{address}}</h4> 
+           </div> 
+         <div class="ms-layout-center-wrap-horizontal">
+           <div style="width:1200px;" v-html="details"></div>
+        </div> 
       </div>
     </div>
   </div>
@@ -34,7 +39,8 @@ export default {
       sponsorName: "",
       creatTime: "",
       typeName:"",
-      address:""
+      address:"",
+      details:""
 
     };
   },
@@ -49,6 +55,8 @@ export default {
         this.getTime(res.data.data.creatTime);
         this.typeName = res.data.data.type;
         this.address = res.data.data.address;
+        this.details = res.data.data.detalis;
+
       });
     },
 
