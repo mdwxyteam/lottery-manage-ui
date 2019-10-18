@@ -141,7 +141,7 @@
     <!-- 选择奖品模态框 -->
     <el-dialog title="选择奖品"
                :visible.sync="chosePrizwVisible">
-      <div style="width:760px; height:560px;"
+      <div style="width:800px; height:560px;"
            class="">
         <div class=" sm-width-100-per sm-height-10-per sm-layout-center-horizontal">
 
@@ -150,12 +150,15 @@
                            placeholder="请输入内容"
                            @select="handleSelect"></el-autocomplete>
         </div>
-        <div class="sm-width-100-per"
-             style="margin: 0 auto;">
+        <div @scroll="onScroll"
+             class="sm-width-100-per sm-overflow-y sm-scrollbar-black"
+             style="margin: 0 auto;height:520px;">
           <div class="item"
+               style="width:190px;margin-right:10px;margin-bottom:10px;"
                v-for="item in PrizeObj.selectPrizeList"
                :key="item.id">
-            <img :src="item.iconUrl" />
+            <img :src="item.iconUrl"
+                 style="width:190px;height:115px" />
             <div class="sm-width-100-per sm-layout-center-horizontal "
                  style="height:26px;">{{item.prizeDescription}}</div>
           </div>
@@ -182,8 +185,14 @@
   margin: 0 2px;
 }
 .item {
-  width: 23%;
+  /* width: 23%; */
   float: left;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+.item:hover {
+  float: left;
+  box-shadow: none;
+  cursor: pointer;
 }
 .item img {
   width: 100%;
@@ -222,12 +231,13 @@ export default {
         ranking: null,
       },
       chosePrize: {
-
+        loading: false,
+        endData: false,
       },
       prizeDiscription: '',//查询需要的model
       PrizeObj: {
         pageNum: 1,
-        pageSize: 15,
+        pageSize: 20,
         selectPrizeList: [],
       },
       pickerOptions: {
@@ -314,9 +324,11 @@ export default {
     },
     querySearchAsync (queryString, cb) {
       let that = this;
-      // if (!queryString) {
-      //   return;
-      // }
+      if (that.chosePrize.loading) {
+        return;
+      }
+      that.chosePrize.endData = false;
+      that.PrizeObj.pageNum = 1;
       queryByPrizeDescription(that.PrizeObj.pageNum, that.PrizeObj.pageSize, queryString).then(res => {
         var resPonData = res.data;
         if (resPonData.code == 0) {
@@ -333,6 +345,41 @@ export default {
     },
     handleSelect (item) {
       console.log(item);
+    },
+    onScroll (res) {
+      let that = this;
+      console.log(res.target.clientHeight)
+      console.log(res.target.scrollHeight)
+      console.log(res.target.scrollTop)
+      console.log(res)
+      console.log("----------------")
+      if (that.chosePrize.loading || that.chosePrize.endData) {
+        return;
+      }
+      if (res.target.scrollTop % 250 === 0) {
+        //加载
+        that.PrizeObj.pageNum = that.PrizeObj.pageNum + 1;
+        queryByPrizeDescription(that.PrizeObj.pageNum, that.PrizeObj.pageSize, that.prizeDiscription).then(res => {
+          var resPonData = res.data;
+          if (resPonData.code == 0) {
+            var pageObj = resPonData.data;
+            if (pageObj.list.length < that.PrizeObj.pageSize) {
+              //最后 没有数据可以查询
+              that.chosePrize.endData = true;
+            }
+            pageObj.list.forEach((item) => {
+              that.PrizeObj.selectPrizeList.push(item)
+            })
+            // that.PrizeObj.selectPrizeList = pageObj.list;
+
+          } else {
+            //查询失败
+          }
+          that.chosePrize.loading = false;
+        }).catch(res => {
+          that.chosePrize.loading = false;
+        })
+      }
     }
   }
 }
