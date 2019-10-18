@@ -83,7 +83,23 @@
                style="width:200px;height:200px;border-radius:5px;"
                class=" sm-layout-center-horizontal">
             <i class="el-icon-plus"></i></div>
+          <div v-for="item in form.prizeList"
+               :key="item.id"
+               style="margin-left: 30px;width:152px;height:200px;box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);"
+               class="ms-layout-wrap-vertical">
+            <img :src="item.prizeUrl"
+                 style="width:100%;height:92px" />
+            <el-tag type="success">{{item.prizeName}}</el-tag>
+            <el-tag type="success">X {{item.prizeCount}}</el-tag>
+            <el-tag type="success">{{item.ranking}}</el-tag>
+            <el-button style="position:relative;left:76px;bottom: -12px;box-shadow: 0 5px 11px 0 rgba(0,0,0,.18), 0 4px 15px 0 rgba(0,0,0,.15);"
+                       type="danger"
+                       icon="el-icon-delete"
+                       circle
+                       @click="deletePrize(item.id)"></el-button>
+          </div>
         </div>
+
       </el-form-item>
       <el-form-item label="活动形式">
         <el-input type="textarea"
@@ -109,12 +125,12 @@
         <el-form-item>
           <!-- <div class="debug ms-layout-wrap-vertical"
                style="widht:256px;height:206px;"> -->
-          <img src=""
+          <img :src="prizeForm.prizeUrl"
                style="width:380px;height:230px;" />
 
           <!-- </div> -->
         </el-form-item>
-        <el-form-item label="活动名称"
+        <el-form-item label="奖品名称"
                       :label-width="formLabelWidth">
           <el-input v-model="prizeForm.prizeName"
                     autocomplete="off"></el-input>
@@ -134,14 +150,14 @@
            class="dialog-footer">
         <el-button @click="prizwFormVisible = false">取 消</el-button>
         <el-button type="primary"
-                   @click="prizwFormVisible = false">确 定</el-button>
+                   @click="cheosePrizeOk">确 定</el-button>
       </div>
     </el-dialog>
 
     <!-- 选择奖品模态框 -->
     <el-dialog title="选择奖品"
                :visible.sync="chosePrizwVisible">
-      <div style="width:800px; height:560px;"
+      <div style="width:960px; height:560px;"
            class="">
         <div class=" sm-width-100-per sm-height-10-per sm-layout-center-horizontal">
 
@@ -154,22 +170,31 @@
              class="sm-width-100-per sm-overflow-y sm-scrollbar-black"
              style="margin: 0 auto;height:520px;">
           <div class="item"
-               style="width:190px;margin-right:10px;margin-bottom:10px;"
+               style="width:190px;margin-right:50px;margin-bottom:10px;"
                v-for="item in PrizeObj.selectPrizeList"
-               :key="item.id">
+               :key="item.id"
+               @click="choseItemPrize(item.id)">
             <img :src="item.iconUrl"
                  style="width:190px;height:115px" />
             <div class="sm-width-100-per sm-layout-center-horizontal "
                  style="height:26px;">{{item.prizeDescription}}</div>
           </div>
+          <el-alert title="已经到底部"
+                    type="info"
+                    style="width:910px"
+                    center
+                    :closable="false"
+                    v-if="chosePrize.endData"
+                    show-icon>
+          </el-alert>
         </div>
       </div>
-      <div slot="footer"
-           class="dialog-footer">
+      <!-- <div slot="footer"
+           class="dialog-footer debug">
         <el-button @click="chosePrizwVisible = false">取 消</el-button>
         <el-button type="primary"
                    @click="chosePrizwVisible = false">确 定</el-button>
-      </div>
+      </div> -->
     </el-dialog>
   </div>
 </template>
@@ -213,6 +238,7 @@ export default {
         condition: '',
         conditionalDescription: null,
         sponsorClaim: '',
+        prizeList: [],
         state: 1,
         adv: '',
         addCondition: ''
@@ -233,6 +259,7 @@ export default {
       chosePrize: {
         loading: false,
         endData: false,
+        choseObj: null
       },
       prizeDiscription: '',//查询需要的model
       PrizeObj: {
@@ -309,11 +336,13 @@ export default {
     chosePrizw () {
       this.chosePrizwVisible = true;
       let that = this;
-      // if (typeof (typeId) == "undefined
       queryByPrizeDescription(that.PrizeObj.pageNum, that.PrizeObj.pageSize, '').then(res => {
         var resPonData = res.data;
         if (resPonData.code == 0) {
           var pageObj = resPonData.data;
+          if (pageObj.pages == that.PrizeObj.pageNum) {
+            that.chosePrize.endData = true;
+          }
           that.PrizeObj.selectPrizeList = pageObj.list;
         } else {
           //查询失败
@@ -321,6 +350,39 @@ export default {
       }).catch(res => {
 
       })
+    },
+    deletePrize (id) {
+      let that = this;
+      that.form.prizeList.forEach(item => {
+        if (item.id == id) {
+          var i = that.form.prizeList.indexOf(item);
+          that.form.prizeList.splice(i, 1);
+        }
+      })
+    },
+    cheosePrizeOk () {
+      let that = this;
+
+      // prizeForm: {
+      //   prizeName: null,
+      //   prizeUrl: null,
+      //   prizeCount: 0,
+      //   ranking: null,
+      // }
+      console.info(that.prizeForm)
+      if (!that.prizeForm.ranking || !that.prizeForm.prizeCount || !that.prizeForm.prizeUrl || !that.prizeForm.prizeName) {
+        return;
+      }
+      that.prizwFormVisible = false;
+      var paobj = {
+        prizeName: that.prizeForm.prizeName,
+        prizeUrl: that.prizeForm.prizeUrl,
+        prizeCount: that.prizeForm.prizeCount,
+        ranking: that.prizeForm.ranking,
+      }
+      that.form.prizeList.push(paobj);
+      // that.prizeForm = null;
+      console.log(that.form.prizeList)
     },
     querySearchAsync (queryString, cb) {
       let that = this;
@@ -333,6 +395,9 @@ export default {
         var resPonData = res.data;
         if (resPonData.code == 0) {
           var pageObj = resPonData.data;
+          if (pageObj.pages == that.PrizeObj.pageNum) {
+            that.chosePrize.endData = true;
+          }
           that.PrizeObj.selectPrizeList = pageObj.list;
         } else {
           //查询失败
@@ -340,23 +405,30 @@ export default {
       }).catch(res => {
 
       })
-      console.log(queryString)
-      console.log(cb)
     },
-    handleSelect (item) {
-      console.log(item);
+    handleSelect (item) { },
+    choseItemPrize (id) {
+      let that = this;
+      that.PrizeObj.selectPrizeList.forEach(itemObj => {
+        if (id == itemObj.id) {
+          that.prizeForm.id = itemObj.id;
+          that.prizeForm.prizeName = itemObj.prizeDescription;
+          that.prizeForm.prizeUrl = itemObj.iconUrl;
+        }
+      })
+      that.chosePrizwVisible = false
     },
     onScroll (res) {
       let that = this;
-      console.log(res.target.clientHeight)
-      console.log(res.target.scrollHeight)
-      console.log(res.target.scrollTop)
-      console.log(res)
-      console.log("----------------")
+
       if (that.chosePrize.loading || that.chosePrize.endData) {
         return;
       }
       if (res.target.scrollTop % 250 === 0) {
+        var ic = res.target.scrollTop / 250;
+        if (that.PrizeObj.pageNum > ic) {
+          return;
+        }
         //加载
         that.PrizeObj.pageNum = that.PrizeObj.pageNum + 1;
         queryByPrizeDescription(that.PrizeObj.pageNum, that.PrizeObj.pageSize, that.prizeDiscription).then(res => {
@@ -365,6 +437,9 @@ export default {
             var pageObj = resPonData.data;
             if (pageObj.list.length < that.PrizeObj.pageSize) {
               //最后 没有数据可以查询
+              that.chosePrize.endData = true;
+            }
+            if (pageObj.pages == that.PrizeObj.pageNum) {
               that.chosePrize.endData = true;
             }
             pageObj.list.forEach((item) => {

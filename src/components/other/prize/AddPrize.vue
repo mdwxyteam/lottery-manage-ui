@@ -84,7 +84,6 @@ export default {
       this.iconFile = file.response.data;
     },
     beforeAvatarUpload (file) {
-      debugger
       const isJPG = file.type === "image/jpeg";
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isJPG) {
