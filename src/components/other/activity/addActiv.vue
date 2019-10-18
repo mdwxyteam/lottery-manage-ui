@@ -362,14 +362,6 @@ export default {
     },
     cheosePrizeOk () {
       let that = this;
-
-      // prizeForm: {
-      //   prizeName: null,
-      //   prizeUrl: null,
-      //   prizeCount: 0,
-      //   ranking: null,
-      // }
-      console.info(that.prizeForm)
       if (!that.prizeForm.ranking || !that.prizeForm.prizeCount || !that.prizeForm.prizeUrl || !that.prizeForm.prizeName) {
         return;
       }
@@ -379,10 +371,16 @@ export default {
         prizeUrl: that.prizeForm.prizeUrl,
         prizeCount: that.prizeForm.prizeCount,
         ranking: that.prizeForm.ranking,
+        id: that.prizeForm.id
+      }
+      if (that.form.prizeList) {
+        if (that.form.prizeList.some(item => {
+          return (item.id == that.prizeForm.id)
+        })) {
+          return;
+        }
       }
       that.form.prizeList.push(paobj);
-      // that.prizeForm = null;
-      console.log(that.form.prizeList)
     },
     querySearchAsync (queryString, cb) {
       let that = this;
