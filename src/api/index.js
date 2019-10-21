@@ -6,6 +6,12 @@ var fileURL = 'http://127.0.0.1:8081/lottery'
 
 export const fileUploadURL = 'http://182.61.39.148:8082/lottery/upload/image'
 
+/**新增赞助商 */
+
+export const addActivity = fromData => {
+  return axios.post(webURL + '/add/activ', fromData)
+}
+
 /**赞助商列表 */
 export const sponsor = (page, rows, typeId, sponsorName, status) => {
   return axios.get(

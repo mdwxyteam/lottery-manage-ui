@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="">
     <el-form ref="form"
              :model="form"
              label-width="80px">
@@ -87,9 +87,9 @@
                :key="item.id"
                style="margin-left: 30px;width:152px;height:200px;box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);"
                class="ms-layout-wrap-vertical">
-            <img :src="item.prizeUrl"
+            <img :src="item.iconUrl"
                  style="width:100%;height:92px" />
-            <el-tag type="success">{{item.prizeName}}</el-tag>
+            <el-tag type="success">{{item.prizeDescription}}</el-tag>
             <el-tag type="success">X {{item.prizeCount}}</el-tag>
             <el-tag type="success">{{item.ranking}}</el-tag>
             <el-button style="position:relative;left:76px;bottom: -12px;box-shadow: 0 5px 11px 0 rgba(0,0,0,.18), 0 4px 15px 0 rgba(0,0,0,.15);"
@@ -102,8 +102,11 @@
 
       </el-form-item>
       <el-form-item label="活动形式">
-        <el-input type="textarea"
-                  v-model="form.desc"></el-input>
+        <mavon-editor v-model="makdown.content"
+                      ref="md"
+                      @imgAdd="$imgAdd"
+                      @change="change"
+                      style="min-height: 600px" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary"
@@ -205,10 +208,10 @@
 .blue_border {
   border: 1px dashed #409eff;
 }
-.content {
+/* .content {
   width: 1000px;
   margin: 0 2px;
-}
+} */
 .item {
   /* width: 23%; */
   float: left;
@@ -224,7 +227,10 @@
 }
 </style>
 <script>
+import { fileUploadURL, addActivity } from "../../../api/index";
 import { querySponsor, queryByPrizeDescription } from "../../../api/index";
+import { mavonEditor } from "mavon-editor";
+import "mavon-editor/dist/css/index.css";
 export default {
   data () {
     return {
@@ -289,11 +295,76 @@ export default {
           }
         }]
       },
+      makdown: {
+        html: null,
+        content: ''
+      },
     }
   },
+  components: {
+    mavonEditor,
+  },
   methods: {
+    // 将图片上传到服务器，返回地址替换到md中
+    $imgAdd (pos, $file) {
+      var formdata = new FormData();
+      formdata.append("file", $file);
+      // 这里没有服务器供大家尝试，可将下面上传接口替换为你自己的服务器接口
+      this.$axios({
+        url: fileUploadURL,
+        method: "post",
+        data: formdata,
+        headers: { "Content-Type": "multipart/form-data" }
+      }).then(res => {
+        if (-1 == res.data.code) {
+          this.$message.success("上传图片失败！");
+        }
+        let url = res.data.data;
+        this.$refs.md.$img2Url(pos, url);
+      });
+    },
+    change (value, render) {
+      // render 为 markdown 解析后的结果
+      this.makdown.html = render;
+    },
     onSubmit () {
-      console.log(this.value);
+      debugger
+      let that = this;
+      let sponsorObj;
+      that.sponsorList.some(item => {
+        if (item.id == that.value) {
+          sponsorObj = item;
+          return;
+        }
+      })
+      that.form.sponsorid = sponsorObj.id;
+      if (!that.makdown.html || !that.form.sponsorid) {
+        return;
+      }
+      that.form.adv = that.makdown.html
+      that.form.sponsorName = sponsorObj.sponsorName;
+      that.form.location = sponsorObj.location;
+      that.form.address = sponsorObj.address;
+      if (that.form.conditionType) {
+        that.form.conditionType = 1;
+      } else {
+        that.form.conditionType = 2;
+      }
+
+      addActivity(that.form).then(res => {
+        console.log(res);
+        let data = res.data;
+        if (data.code == -1) {
+          //失败
+          this.$message.error("新增活动失败！");
+        } else if (data.catch == 0) {
+          that.form.sponsorid = null;
+          that.value = null;
+          this.$message.success("新增活动成功！");
+        }
+      }).catch(res => {
+        this.$message.error("新增活动失败！");
+      })
     },
     remoteSearch (query) {
       if (query == '') {
@@ -367,8 +438,8 @@ export default {
       }
       that.prizwFormVisible = false;
       var paobj = {
-        prizeName: that.prizeForm.prizeName,
-        prizeUrl: that.prizeForm.prizeUrl,
+        prizeDescription: that.prizeForm.prizeName,
+        iconUrl: that.prizeForm.prizeUrl,
         prizeCount: that.prizeForm.prizeCount,
         ranking: that.prizeForm.ranking,
         id: that.prizeForm.id
@@ -404,7 +475,9 @@ export default {
 
       })
     },
-    handleSelect (item) { },
+    handleSelect (item) {
+      console.log(item)
+    },
     choseItemPrize (id) {
       let that = this;
       that.PrizeObj.selectPrizeList.forEach(itemObj => {
