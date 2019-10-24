@@ -5,6 +5,11 @@ var webURL = 'http://127.0.0.1:8081/web/api'
 var fileURL = 'http://127.0.0.1:8081/lottery'
 
 export const fileUploadURL = 'http://182.61.39.148:8082/lottery/upload/image'
+
+/**通过活动id查询活动与奖品关联数据 */
+export const queryActivPrize = id => {
+  return axios.get(webURL + '/query/activPrize/activid?id=' + id)
+}
 /**修改活动 */
 export const updateActivity = formData => {
   return axios.post(webURL + '/update/activ', formData)

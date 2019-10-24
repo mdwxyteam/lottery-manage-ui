@@ -110,7 +110,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary"
-                   @click="onSubmit">立即创建</el-button>
+                   @click="onSubmit">提交</el-button>
         <el-button>取消</el-button>
       </el-form-item>
     </el-form>
@@ -227,7 +227,7 @@
 }
 </style>
 <script>
-import { fileUploadURL, addActivity, updateActivity } from "../../../api/index";
+import { fileUploadURL, addActivity, updateActivity, queryActivPrize } from "../../../api/index";
 import { querySponsor, queryByPrizeDescription } from "../../../api/index";
 import { mavonEditor } from "mavon-editor";
 import "mavon-editor/dist/css/index.css";
@@ -237,6 +237,7 @@ export default {
     return {
       sponsorList: [],
       form: {
+        id: this.$route.query.id,
         sponsorName: this.$route.query.sponsorName,
         sponsorid: this.$route.query.sponsorid,
         location: this.$route.query.location,
@@ -304,6 +305,9 @@ export default {
   components: {
     mavonEditor,
   },
+  created () {
+    this.currentData();
+  },
   methods: {
     // 将图片上传到服务器，返回地址替换到md中
     $imgAdd (pos, $file) {
@@ -322,6 +326,22 @@ export default {
         let url = res.data.data;
         this.$refs.md.$img2Url(pos, url);
       });
+    },
+    currentData () {
+      let that = this;
+      if (!this.form.id) {
+        return;
+      }
+      queryActivPrize(this.form.id).then(res => {
+        let resData = res.data;
+        if (resData.code == 0) {
+          that.form.prizeList = resData.data;
+        } else {
+          this.$message.error(resData.msg);
+        }
+      }).catch(res => {
+        this.$message.error("操作异常！");
+      })
     },
     change (value, render) {
       // render 为 markdown 解析后的结果
