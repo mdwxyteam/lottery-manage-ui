@@ -27,7 +27,13 @@ export default new Router({
             require(['../components/other/activity/Activity.vue'], resolve),
           meta: { title: '活动管理' }
         },
-
+        /** 活动管理*/
+        {
+          path: '/editActivity',
+          component: resolve =>
+            require(['../components/other/activity/EditActivity.vue'], resolve),
+          meta: { title: '活动管理' }
+        },
         /** 赞助商管理*/
         {
           path: '/sponsor',
@@ -51,13 +57,13 @@ export default new Router({
           meta: { title: '编辑赞助商' }
         },
 
-          /**赞助商详情 */
-          {
-            path: '/detailsponsor',
-            component: resolve =>
-              require(['../components/other/sponsor/DetailSponsor.vue'], resolve),
-            meta: { title: '赞助商详情' }
-          },
+        /**赞助商详情 */
+        {
+          path: '/detailsponsor',
+          component: resolve =>
+            require(['../components/other/sponsor/DetailSponsor.vue'], resolve),
+          meta: { title: '赞助商详情' }
+        },
 
         /**赞助商类型管理 */
         {

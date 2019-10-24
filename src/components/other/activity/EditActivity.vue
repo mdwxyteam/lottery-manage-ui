@@ -227,27 +227,27 @@
 }
 </style>
 <script>
-import { fileUploadURL, addActivity } from "../../../api/index";
+import { fileUploadURL, addActivity, updateActivity } from "../../../api/index";
 import { querySponsor, queryByPrizeDescription } from "../../../api/index";
 import { mavonEditor } from "mavon-editor";
 import "mavon-editor/dist/css/index.css";
 export default {
+  name: 'editActivity',
   data () {
     return {
       sponsorList: [],
       form: {
-        sponsorName: '',
-        sponsorid: '',
-        location: '',
-        address: '',
+        sponsorName: this.$route.query.sponsorName,
+        sponsorid: this.$route.query.sponsorid,
+        location: this.$route.query.location,
+        address: this.$route.query.address,
         conditionType: false,
-        condition: '',
-        conditionalDescription: null,
-        sponsorClaim: '',
+        condition: this.$route.query.condition,
+        conditionalDescription: this.$route.query.conditionalDescription,
+        sponsorClaim: this.$route.query.sponsorClaim,
         prizeList: [],
-        state: 1,
-        adv: '',
-        addCondition: ''
+        adv: this.$route.query.adv,
+        addCondition: this.$route.query.addCondition
       },
       value: '',
       loading: false,

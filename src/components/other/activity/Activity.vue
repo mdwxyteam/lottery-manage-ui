@@ -52,7 +52,7 @@
       <el-table-column prop="sponsorClaim"
                        label="活动要求"></el-table-column>
       <el-table-column prop="state"
-                       label="活动状态"></el-table-column>
+                       label="活动进度"></el-table-column>
       <el-table-column label="启用禁用"
                        width="120">
         <template slot-scope="scope">
@@ -67,10 +67,12 @@
                        width="180"
                        align="center">
         <template slot-scope="scope">
+
           <el-button type="text"
                      icon="el-icon-edit"
-                     @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button type="text"
+                     @click="handleEdit(scope.row)">编辑</el-button>
+          <el-button style="margin-left: 15px;"
+                     type="text"
                      icon="el-icon-view"
                      @click="handleEdit(scope.$index, scope.row)">详情</el-button>
           <!-- <el-button type="text"
@@ -124,6 +126,27 @@ export default {
   },
 
   methods: {
+    handleEdit (row) {
+      console.log(row)
+      this.$router.push({
+        path: "/EditActivity",
+        query: {
+          name: "编辑活动",
+          id: row.id,
+          sponsorid: row.sponsorid,
+          sponsorName: row.sponsorName,
+          location: row.location,
+          address: row.address,
+          conditionType: row.conditionType,
+          condition: row.condition,
+          conditionalDescription: row.conditionalDescription,
+          sponsorClaim: row.sponsorClaim,
+          adv: row.adv,
+          addCondition: row.adv
+        }
+      });
+    },
+    /**条件搜索 */
     conditionLimit (conditionType) {
       this.pageRequestObj.conditionType = conditionType;
       this.getData();
@@ -162,6 +185,11 @@ export default {
               item.delState = true;
             } else {
               item.delState = false;
+            }
+            if (item.state == 1) {
+              item.state = "进行中…";
+            } else {
+              item.state = "已结束…";
             }
           })
           that.tableData = resData.data.list;
