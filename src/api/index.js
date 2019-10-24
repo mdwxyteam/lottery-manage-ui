@@ -6,7 +6,26 @@ var fileURL = 'http://127.0.0.1:8081/lottery'
 
 export const fileUploadURL = 'http://182.61.39.148:8082/lottery/upload/image'
 
-/**新增赞助商 */
+/**分页查询活动 */
+export const pageActivity = page => {
+  return axios.get(
+    webURL +
+      '/activ/page?pageNum=' +
+      page.pageNum +
+      '&pageSize=' +
+      page.pageSize +
+      '&conditionType=' +
+      page.conditionType +
+      '&sponsorName=' +
+      page.sponsorName
+  )
+}
+/**删活动 */
+export const delActivity = (id, delState) => {
+  return axios.post(webURL + '/activ/delState', { id, delState })
+}
+
+/**新增活动 */
 
 export const addActivity = fromData => {
   return axios.post(webURL + '/add/activ', fromData)
