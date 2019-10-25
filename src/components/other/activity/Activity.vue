@@ -142,7 +142,8 @@ export default {
           conditionalDescription: row.conditionalDescription,
           sponsorClaim: row.sponsorClaim,
           adv: row.adv,
-          addCondition: row.adv
+          addCondition: row.addCondition,
+          markdownAdv: row.markdownAdv
         }
       });
     },

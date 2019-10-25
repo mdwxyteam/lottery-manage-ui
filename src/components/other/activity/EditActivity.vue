@@ -227,7 +227,7 @@
 }
 </style>
 <script>
-import { fileUploadURL, addActivity, updateActivity, queryActivPrize } from "../../../api/index";
+import { fileUploadURL, updateActivity, queryActivPrize } from "../../../api/index";
 import { querySponsor, queryByPrizeDescription } from "../../../api/index";
 import { mavonEditor } from "mavon-editor";
 import "mavon-editor/dist/css/index.css";
@@ -242,17 +242,18 @@ export default {
         sponsorid: this.$route.query.sponsorid,
         location: this.$route.query.location,
         address: this.$route.query.address,
-        conditionType: false,
+        conditionType: this.$route.query.conditionType,
         condition: this.$route.query.condition,
         conditionalDescription: this.$route.query.conditionalDescription,
         sponsorClaim: this.$route.query.sponsorClaim,
         prizeList: [],
         adv: this.$route.query.adv,
-        addCondition: this.$route.query.addCondition
+        addCondition: this.$route.query.addCondition,
+        markdownAdv: this.$route.query.markdownAdv
       },
-      value: '',
+      value: this.$route.query.sponsorName,
       loading: false,
-      chaNum: 1,
+      chaNum: this.$route.query.conditionType,
       borderStyle: 'gray_border',
       prizwFormVisible: false,
       formLabelWidth: '120px',
@@ -298,7 +299,7 @@ export default {
       },
       makdown: {
         html: null,
-        content: ''
+        content: this.$route.query.markdownAdv
       },
     }
   },
@@ -332,10 +333,13 @@ export default {
       if (!this.form.id) {
         return;
       }
+      console.log(this.form.id)
       queryActivPrize(this.form.id).then(res => {
         let resData = res.data;
+        console.log(resData)
         if (resData.code == 0) {
           that.form.prizeList = resData.data;
+          console.log(that.form.prizeList.length)
         } else {
           this.$message.error(resData.msg);
         }
@@ -357,21 +361,26 @@ export default {
           return;
         }
       })
-      that.form.sponsorid = sponsorObj.id;
-      if (!that.makdown.html || !that.form.sponsorid) {
+
+
+      if (!that.makdown.html || !that.form || !that.makdown.content) {
         return;
       }
+      if (sponsorObj) {
+        that.form.sponsorid = sponsorObj.id;
+        that.form.sponsorName = sponsorObj.sponsorName;
+        that.form.location = sponsorObj.location;
+        that.form.address = sponsorObj.address;
+      }
       that.form.adv = that.makdown.html
-      that.form.sponsorName = sponsorObj.sponsorName;
-      that.form.location = sponsorObj.location;
-      that.form.address = sponsorObj.address;
+
       if (that.form.conditionType) {
         that.form.conditionType = 1;
       } else {
         that.form.conditionType = 2;
       }
 
-      addActivity(that.form).then(res => {
+      updateActivity(that.form).then(res => {
         console.log(res);
         let data = res.data;
         if (data.code == -1) {

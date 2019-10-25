@@ -247,7 +247,8 @@ export default {
         prizeList: [],
         state: 1,
         adv: '',
-        addCondition: ''
+        addCondition: '',
+        markdownAdv: ''
       },
       value: '',
       loading: false,
@@ -328,7 +329,6 @@ export default {
       this.makdown.html = render;
     },
     onSubmit () {
-      debugger
       let that = this;
       let sponsorObj;
       that.sponsorList.some(item => {
@@ -338,10 +338,12 @@ export default {
         }
       })
       that.form.sponsorid = sponsorObj.id;
-      if (!that.makdown.html || !that.form.sponsorid) {
+      if (!that.makdown.html || !that.form.sponsorid || !that.makdown.content || !sponsorObj.sponsorName) {
         return;
       }
-      that.form.adv = that.makdown.html
+      debugger
+      that.form.adv = that.makdown.html;
+      that.form.markdownAdv = that.makdown.content;
       that.form.sponsorName = sponsorObj.sponsorName;
       that.form.location = sponsorObj.location;
       that.form.address = sponsorObj.address;
@@ -352,13 +354,18 @@ export default {
       }
 
       addActivity(that.form).then(res => {
-        console.log(res);
         let data = res.data;
         if (data.code == -1) {
           //失败
           this.$message.error("新增活动失败！");
-        } else if (data.catch == 0) {
+        } else if (data.code == 0) {
           that.form.sponsorid = null;
+          that.value = null;
+          that.makdown.html = null;
+          that.makdown.content = null;
+          that.form.sponsorName = null;
+          that.form.markdownAdv = null;
+          that.form = null;
           that.value = null;
           this.$message.success("新增活动成功！");
         }
@@ -384,7 +391,6 @@ export default {
       })
     },
     changeTime (res) {
-      console.log(res)
       this.form.conditionalDescription = res;
     },
     numberChange (res) {
