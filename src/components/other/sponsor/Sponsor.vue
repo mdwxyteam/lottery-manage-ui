@@ -78,13 +78,17 @@
                          label="赞助商名称"></el-table-column>
         <el-table-column prop="type"
                          label="赞助商类型"></el-table-column>
+        <el-table-column prop="principal"
+                         label="赞助商负责人"></el-table-column>
+        <el-table-column prop="contact"
+                         label="赞助商电话"></el-table-column>
         <el-table-column prop="address"
                          label="地点"
                          width="240"></el-table-column>
         <el-table-column prop="creatTime"
                          label="创建时间"
                          :formatter="getTime"
-                         width="180"></el-table-column>
+                         width="180" ></el-table-column>
         <el-table-column label="启用禁用"
                          width="120">
           <template slot-scope="scope">
@@ -274,7 +278,10 @@ export default {
           address: row.address,
           markDown: row.markDown,
           detalis: row.detalis,
-          location: row.location
+          location: row.location,
+          principal:row.principal,
+          contact:row.contact,
+          cover:row.cover,
         }
       });
     },

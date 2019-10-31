@@ -80,10 +80,14 @@ export const addSponsor = (
   typeId,
   type,
   sponsor,
+  principal,
+  contact,
   location,
   address,
   detalis,
-  markDown
+  markDown,
+  cover
+
 ) => {
   return axios.post(webURL + '/add/sponsor', {
     typeId,
@@ -92,7 +96,11 @@ export const addSponsor = (
     location,
     address,
     detalis,
-    markDown
+    markDown,
+    principal,
+    contact,
+    cover
+
   })
 }
 /**更新赞助商 */
@@ -101,20 +109,26 @@ export const updateSponsor = (
   typeId,
   type,
   sponsor,
+  principal,
+  contact,
   location,
   address,
   detalis,
-  markDown
+  markDown,
+  cover
 ) => {
   return axios.post(webURL + '/update/sponsor', {
     id,
     typeId,
     type,
     sponsor,
+    principal,
+    contact,
     location,
     address,
     detalis,
-    markDown
+    markDown,
+    cover
   })
 }
 /**新增保存赞助商类型 */
