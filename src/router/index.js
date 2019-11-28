@@ -126,6 +126,20 @@ export default new Router({
             require(['../components/other/test.vue'], resolve),
           meta: { title: '测试' }
         },
+        /**商品管理 */
+        {
+          path: '/commodity',
+          component: resolve =>
+            require(['../components/shopping/commodity/Commodity.vue'], resolve),
+          meta: { title: '商品管理' }
+        },
+        /**新增商品 */
+        {
+          path: '/addCommodity',
+          component: resolve =>
+            require(['../components/shopping/commodity/Add.vue'], resolve),
+          meta: { title: '新增商品' }
+        },
         {
           // 富文本编辑器组件
           path: '/editor',

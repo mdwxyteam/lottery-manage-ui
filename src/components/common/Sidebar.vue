@@ -56,8 +56,35 @@ export default {
           title: "系统首页"
         },
         {
-          icon: "el-icon-lx-home",
+          icon: "el-icon-s-grid",
           index: "2",
+          title: "拼购管理",
+          subs: [
+            {
+              index: "commodity",
+              title: "商品管理"
+            },
+            {
+              index: "sponsor",
+              title: "赞助商管理"
+            },
+            {
+              index: "sponsortype",
+              title: "赞助商类型管理"
+            },
+            {
+              index: "prize",
+              title: "奖品管理"
+            },
+            {
+              index: "test",
+              title: "测试"
+            }
+          ]
+        },
+        {
+          icon: "el-icon-lx-home",
+          index: "3",
           title: "其它管理",
           subs: [
             {
