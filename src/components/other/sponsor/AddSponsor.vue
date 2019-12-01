@@ -76,7 +76,7 @@
         <el-col :span="8" style="margin-top:30px;">
           <div class="container">
             <div class="headerTitle">类型封面</div>
-            <div class="div-el-form" style="margin-left:-70px;">
+            <div class="div-el-form" style="margin-left:-120px;">
               <el-form-item prop="imgUrl">
                 <el-upload
                   class="avatar-uploader"

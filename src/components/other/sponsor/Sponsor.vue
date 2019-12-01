@@ -20,7 +20,7 @@
     <div class="container">
        <div class="handle-box">
           <el-row :gutter="20">
-            <el-col :span="6">
+            <el-col :span="4">
               <el-button
                 type="danger"
                 icon="el-icon-delete"
@@ -28,8 +28,7 @@
                 @click="handleDelAll"
               >批量删除</el-button>
             </el-col>
-              <el-col :span="3"
-                  :offset="3">
+              <el-col :span="6">
             <el-select v-model="typeId"
                        placeholder="请选择赞助商类型">
               <el-option v-for="sponsorObj in sponsorList"
@@ -53,7 +52,7 @@
                       placeholder="筛选关键词"
                       class="handle-input mr10"></el-input>
           </el-col>
-          <el-col :span="3">
+          <el-col :span="6">
             <el-button type="primary"
                        icon="el-icon-search"
                        @click="search">搜索</el-button>
@@ -65,26 +64,29 @@
         </div>
           <el-table :data="tableData"
                 border
-                class="table"
+                class="table" 
                 ref="multipleTable"
+                style="width:100%"
                 @selection-change="handleSelectionChange">
         <el-table-column type="selection"
                          width="55"
                          align="center"></el-table-column>
-        <el-table-column prop="id"
-                         label="赞助商ID"
-                         width="100"></el-table-column>
         <el-table-column prop="sponsorName"
-                         label="赞助商名称"></el-table-column>
+                         label="赞助商名称"
+                         width="100" show-overflow-tooltip></el-table-column>
         <el-table-column prop="type"
-                         label="赞助商类型"></el-table-column>
+                         label="赞助商类型"
+                         width="100" show-overflow-tooltip></el-table-column>
         <el-table-column prop="principal"
-                         label="赞助商负责人"></el-table-column>
+                         label="负责人"
+                         width="100">
+                         </el-table-column>
         <el-table-column prop="contact"
-                         label="赞助商电话"></el-table-column>
+                         label="联系方式"
+                         width="120"></el-table-column>
         <el-table-column prop="address"
                          label="地点"
-                         width="240"></el-table-column>
+                         width="150" show-overflow-tooltip></el-table-column>
         <el-table-column prop="creatTime"
                          label="创建时间"
                          :formatter="getTime"
@@ -130,7 +132,6 @@
         ></el-pagination>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
