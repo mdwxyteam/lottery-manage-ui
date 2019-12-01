@@ -6,6 +6,32 @@ var fileURL = 'http://127.0.0.1:8081/lottery'
 
 export const fileUploadURL = 'http://182.61.39.148:8082/lottery/upload/image'
 
+// 拼购模块-----start----
+export const editGoods = (formData) => {
+  debugger
+  return axios.post(webURL + '/edit/goods', formData)
+}
+/**增加商品 */
+export const addGoods = (formData) => {
+  return axios.post(webURL + '/add/goods', formData)
+}
+/**分页查询商品 */
+export const pageGoods = page => {
+  return axios.get(
+    webURL +
+    '/page/goods?pageNum=' +
+    page.pageNum +
+    '&pageSize=' +
+    page.pageSize +
+    '&goodsName=' +
+    page.goodsName +
+    '&state=' +
+    page.state
+  )
+}
+// 拼购模块-----end----
+
+
 /**通过活动id查询活动与奖品关联数据 */
 export const queryActivPrize = id => {
   return axios.get(webURL + '/query/activPrize/activid?id=' + id)
@@ -18,14 +44,14 @@ export const updateActivity = formData => {
 export const pageActivity = page => {
   return axios.get(
     webURL +
-      '/activ/page?pageNum=' +
-      page.pageNum +
-      '&pageSize=' +
-      page.pageSize +
-      '&conditionType=' +
-      page.conditionType +
-      '&sponsorName=' +
-      page.sponsorName
+    '/activ/page?pageNum=' +
+    page.pageNum +
+    '&pageSize=' +
+    page.pageSize +
+    '&conditionType=' +
+    page.conditionType +
+    '&sponsorName=' +
+    page.sponsorName
   )
 }
 /**删活动 */
@@ -43,16 +69,16 @@ export const addActivity = fromData => {
 export const sponsor = (page, rows, typeId, sponsorName, status) => {
   return axios.get(
     webURL +
-      '/sponsor/condition?pageNum=' +
-      page +
-      '&pageSize=' +
-      rows +
-      '&typeId=' +
-      typeId +
-      '&sponsorName=' +
-      sponsorName +
-      '&status=' +
-      status
+    '/sponsor/condition?pageNum=' +
+    page +
+    '&pageSize=' +
+    rows +
+    '&typeId=' +
+    typeId +
+    '&sponsorName=' +
+    sponsorName +
+    '&status=' +
+    status
   )
 }
 
@@ -171,12 +197,12 @@ export const statusType = (typeId, status) => {
 export const queryByPrizeDescription = (page, pageSize, prizeDescription) => {
   return axios.get(
     webURL +
-      '/page/description/prize?pageNum=' +
-      page +
-      '&pageSize=' +
-      pageSize +
-      '&prizeDescription=' +
-      prizeDescription
+    '/page/description/prize?pageNum=' +
+    page +
+    '&pageSize=' +
+    pageSize +
+    '&prizeDescription=' +
+    prizeDescription
   )
 }
 /**新增保存奖品 */
@@ -184,26 +210,26 @@ export const queryByPrizeDescription = (page, pageSize, prizeDescription) => {
 export const addPrize = (prizeDescription, iconUrl, prizeCount) => {
   return axios.post(
     webURL +
-      '/add/prize?prizeDescription=' +
-      prizeDescription +
-      '&iconUrl=' +
-      iconUrl +
-      '&prizeCount=' +
-      prizeCount
+    '/add/prize?prizeDescription=' +
+    prizeDescription +
+    '&iconUrl=' +
+    iconUrl +
+    '&prizeCount=' +
+    prizeCount
   )
 }
 /**修改保存奖品 */
 export const editPrize = (prizeId, prizeDescription, iconUrl, prizeCount) => {
   return axios.post(
     webURL +
-      '/edit/prize?prizeId=' +
-      prizeId +
-      '&prizeDescription=' +
-      prizeDescription +
-      '&iconUrl=' +
-      iconUrl +
-      '&prizeCount=' +
-      prizeCount
+    '/edit/prize?prizeId=' +
+    prizeId +
+    '&prizeDescription=' +
+    prizeDescription +
+    '&iconUrl=' +
+    iconUrl +
+    '&prizeCount=' +
+    prizeCount
   )
 }
 /**删除状态奖品 */

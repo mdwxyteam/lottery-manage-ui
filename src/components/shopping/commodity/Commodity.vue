@@ -20,8 +20,10 @@
           type="primary"
           icon="el-icon-search"
           @click="conditionLimit(1)"
-        >时间限制</el-button>
-        <el-button type="primary" icon="el-icon-search" @click="conditionLimit(2)">人数限制</el-button>
+        >售卖中</el-button>
+        <el-button type="primary" icon="el-icon-search" @click="conditionLimit(2)">售卖结束</el-button>
+        <el-button type="primary" icon="el-icon-search" @click="conditionLimit(3)">售卖准备中</el-button>
+        <el-button type="primary" icon="el-icon-search" @click="conditionLimit(-1)">已删除</el-button>
 
         <router-link style="margin-left:15px;" :to="{path:'/addCommodity',query: {name: '新增商品'}}">
           <el-button type="primary" icon="el-icon-plus">新增</el-button>
@@ -33,25 +35,25 @@
     <div class="sm-layout-left-center-wrap" style>
       <el-card
         :body-style="{ padding: '0px' }"
-        style="width: 230px;height:300px"
+        style="width: 230px;height:240px"
         shadow="hover"
         class="sm-margin-right-1rem sm-margin-bottom-1rem"
+        v-for="item in tableData"
+        :key="item.id"
       >
-        <img
-          src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
-          class="image"
-        />
+        <img :src="item.goodsImg" class="image" />
         <div style="padding: 10px;">
-          <span>好吃的汉堡</span>
+          <span>{{item.goodsName}}</span>
           <div class="bottom clearfix sm-layout-left-center-wrap" style="align-items:flex-start">
-            <span class="time" style="color: red">￥5999</span>
-            <span class="time margin-left-20" style>已售出：3600份</span>
+            <span class="time" style="color: red">￥{{item.price}}</span>
+            <span class="time margin-left-20" style>已售出：{{item.payNum}}份</span>
             <el-button
+              v-if="item.status"
               style="position:relative;left:15px;top: -62px;box-shadow: 0 5px 11px 0 rgba(0,0,0,.18), 0 4px 15px 0 rgba(0,0,0,.15);"
               type="primary"
               icon="el-icon-edit"
               circle
-              @click="deletePrize(item.id)"
+              @click="handleEdit(item.id)"
             ></el-button>
           </div>
         </div>
@@ -75,7 +77,12 @@
 </template>
 
 <script>
-import { pageActivity, delActivity, querySponsor } from "../../../api/index";
+import {
+  pageActivity,
+  delActivity,
+  querySponsor,
+  pageGoods
+} from "../../../api/index";
 export default {
   name: "commodity",
   data() {
@@ -89,8 +96,8 @@ export default {
       pageRequestObj: {
         pageNum: 1,
         pageSize: 15,
-        conditionType: 1,
-        sponsorName: ""
+        state: 3,
+        goodsName: ""
       },
       pageResponse: {
         total: 0,
@@ -115,30 +122,25 @@ export default {
         }
       });
     },
-    handleEdit(row) {
-      console.log(row);
-      this.$router.push({
-        path: "/EditActivity",
-        query: {
-          name: "编辑活动",
-          id: row.id,
-          sponsorid: row.sponsorid,
-          sponsorName: row.sponsorName,
-          location: row.location,
-          address: row.address,
-          conditionType: row.conditionType,
-          condition: row.condition,
-          conditionalDescription: row.conditionalDescription,
-          sponsorClaim: row.sponsorClaim,
-          adv: row.adv,
-          addCondition: row.addCondition,
-          markdownAdv: row.markdownAdv
+    handleEdit(id) {
+      console.log(id);
+      let dataItem = null;
+      console.log(this.tableData);
+      this.tableData.some((item, i) => {
+        if (item.id == id) {
+          dataItem = item;
+          return true;
         }
+      });
+      console.log(dataItem);
+      this.$router.push({
+        path: "/editCommodity",
+        query: dataItem
       });
     },
     /**条件搜索 */
-    conditionLimit(conditionType) {
-      this.pageRequestObj.conditionType = conditionType;
+    conditionLimit(state) {
+      this.pageRequestObj.state = state;
       this.getData();
     },
     // 分页导航
@@ -163,7 +165,7 @@ export default {
     // 获取数据
     getData() {
       let that = this;
-      pageActivity(this.pageRequestObj)
+      pageGoods(this.pageRequestObj)
         .then(res => {
           let resData = res.data;
           that.pageResponse.total = resData.data.total;
@@ -172,15 +174,15 @@ export default {
           that.pageResponse.pageNum = resData.data.pageNum;
           if (resData.code == 0) {
             resData.data.list.some(item => {
-              if (item.delState == 1) {
-                item.delState = true;
-              } else {
-                item.delState = false;
-              }
+              //   if (item.delState == 1) {
+              //     item.delState = true;
+              //   } else {
+              //     item.delState = false;
+              //   }
               if (item.state == 1) {
-                item.state = "进行中…";
+                item.status = false;
               } else {
-                item.state = "已结束…";
+                item.status = true;
               }
             });
             that.tableData = resData.data.list;
@@ -196,7 +198,7 @@ export default {
       let that = this;
       this.pageRequestObj.pageNum = 1;
       this.pageRequestObj.pageSize = 15;
-      this.pageRequestObj.sponsorName = query;
+      this.pageRequestObj.goodsName = query;
       this.getData();
     },
     handleStatus(row) {

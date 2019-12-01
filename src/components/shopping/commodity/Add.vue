@@ -20,11 +20,11 @@
       <div class="container">
         <div class="headerTitle">商品信息</div>
         <div>
-          <el-form-item label="商品名称" prop="prizeDescription" placeholder="请输入商品名称">
-            <el-input v-model="ruleForm.prizeDescription" type="text" class="sm-width-25-per" style></el-input>
+          <el-form-item label="商品名称" prop="goodsName" placeholder="请输入商品名称">
+            <el-input v-model="ruleForm.goodsName" type="text" class="sm-width-25-per" style></el-input>
           </el-form-item>
           <el-form-item label="商品价格">
-            <el-input-number v-model="ruleForm.prizeCount" :min="1" :max="100"></el-input-number>
+            <el-input-number v-model="ruleForm.price" :min="1" :max="99999999"></el-input-number>
           </el-form-item>
           <el-form-item label="商品图片" prop="imgUrl">
             <el-upload
@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { addPrize } from "../../../api/index";
+import { addGoods } from "../../../api/index";
 import { file } from "../../../api/index";
 export default {
   name: "addCommodity",
@@ -55,13 +55,12 @@ export default {
       iconFile: "",
       imgUrl: "",
       ruleForm: {
-        prizeDescription: "",
-        prizeCount: ""
+        goodsName: "",
+        goodsImg: "",
+        price: ""
       },
       rules: {
-        prizeDescription: [
-          { required: true, message: "请输入描述", trigger: "blur" }
-        ]
+        goodsName: [{ required: true, message: "请输入描述", trigger: "blur" }]
       }
     };
   },
@@ -90,18 +89,24 @@ export default {
             this.$message.error("请上传图片");
             return false;
           }
-          addPrize(
-            this.ruleForm.prizeDescription,
-            this.iconFile,
-            this.ruleForm.prizeCount
-          ).then(resoponse => {
+          let ruleFormData = {
+            goodsName: this.ruleForm.goodsName,
+            goodsImg: this.iconFile,
+            price: this.ruleForm.price
+          };
+          addGoods(ruleFormData).then(resoponse => {
             if ((resoponse.status = 200)) {
+              if (resoponse.data.code == -1) {
+                this.$message.error(resoponse.data.msg);
+              }
               this.$message.success("添加成功");
               this.ruleForm = {
-                prizeDescription: "",
-                prizeCount: 1
+                goodsName: "",
+                price: 1
               };
               this.imgUrl = "";
+            } else {
+              this.$message.error("操作失败");
             }
           });
         }

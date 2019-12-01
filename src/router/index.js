@@ -140,6 +140,13 @@ export default new Router({
             require(['../components/shopping/commodity/Add.vue'], resolve),
           meta: { title: '新增商品' }
         },
+        /**修改商品 */
+        {
+          path: '/editCommodity',
+          component: resolve =>
+            require(['../components/shopping/commodity/Edit.vue'], resolve),
+          meta: { title: '修改商品' }
+        },
         {
           // 富文本编辑器组件
           path: '/editor',

@@ -20,11 +20,17 @@
       <div class="container">
         <div class="headerTitle">商品信息</div>
         <div>
-          <el-form-item label="商品名称" prop="prizeDescription" placeholder="请输入商品名称">
-            <el-input v-model="ruleForm.prizeDescription" type="text" class="sm-width-25-per" style></el-input>
+          <el-form-item label="商品名称" prop="goodsName" placeholder="请输入商品名称">
+            <el-input v-model="ruleForm.goodsName" type="text" class="sm-width-25-per" style></el-input>
           </el-form-item>
           <el-form-item label="商品价格">
-            <el-input-number v-model="ruleForm.prizeCount" :min="1" :max="100"></el-input-number>
+            <el-input-number v-model="ruleForm.price" :min="1" :max="99999999"></el-input-number>
+          </el-form-item>
+          <el-form-item label="商品状态">
+            <el-radio v-model="ruleForm.state" :label="-1">删除</el-radio>
+            <el-radio v-model="ruleForm.state" :label="1">售卖</el-radio>
+            <el-radio v-model="ruleForm.state" :label="2">结束</el-radio>
+            <el-radio v-model="ruleForm.state" :label="3">准备</el-radio>
           </el-form-item>
           <el-form-item label="商品图片" prop="imgUrl">
             <el-upload
@@ -45,7 +51,7 @@
 </template>
 
 <script>
-import { addPrize } from "../../../api/index";
+import { editGoods } from "../../../api/index";
 import { file } from "../../../api/index";
 export default {
   name: "editCommodity",
@@ -53,15 +59,17 @@ export default {
     return {
       file: file,
       iconFile: "",
-      imgUrl: "",
+      imgUrl: this.$route.query.goodsImg,
+      dataItem: this.$route.query,
       ruleForm: {
-        prizeDescription: "",
-        prizeCount: ""
+        id: this.$route.query.id,
+        state: this.$route.query.state,
+        goodsName: this.$route.query.goodsName,
+        goodsImg: this.$route.query.goodsImg,
+        price: this.$route.query.price
       },
       rules: {
-        prizeDescription: [
-          { required: true, message: "请输入描述", trigger: "blur" }
-        ]
+        goodsName: [{ required: true, message: "请输入描述", trigger: "blur" }]
       }
     };
   },
@@ -84,24 +92,49 @@ export default {
       return isJPG && isLt2M;
     },
     submitForm(formName) {
+      var that = this;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          if (this.iconFile == "") {
-            this.$message.error("请上传图片");
-            return false;
+          // if (this.iconFile == "") {
+          //   this.$message.error("请上传图片");
+          //   return false;
+          // }
+          if (
+            that.dataItem.state == that.ruleForm.state &&
+            that.dataItem.goodsName == that.ruleForm.goodsName &&
+            that.dataItem.price == that.ruleForm.price &&
+            that.dataItem.goodsImg == that.ruleForm.goodsImg
+          ) {
+            this.$message.warning("请编辑后再提交!");
+            return;
           }
-          addPrize(
-            this.ruleForm.prizeDescription,
-            this.iconFile,
-            this.ruleForm.prizeCount
-          ).then(resoponse => {
+          debugger;
+
+          // let ruleFormData = {
+          //   goodsName: this.ruleForm.goodsName,
+          //   goodsImg: this.iconFile,
+          //   price: this.ruleForm.price
+          // };
+          editGoods(that.ruleForm).then(resoponse => {
             if ((resoponse.status = 200)) {
-              this.$message.success("添加成功");
-              this.ruleForm = {
-                prizeDescription: "",
-                prizeCount: 1
+              if (resoponse.data.code == -1) {
+                this.$message.error(resoponse.data.msg);
+              }
+              that.dataItem = {
+                id: that.ruleForm.id,
+                goodsName: that.ruleForm.goodsName,
+                goodsImg: that.ruleForm.goodsImg,
+                price: that.ruleForm.price,
+                state: that.ruleForm.state
               };
-              this.imgUrl = "";
+              this.$message.success("编辑成功!");
+              // this.ruleForm = {
+              //   goodsName: "",
+              //   price: 1
+              // };
+              // this.imgUrl = "";
+            } else {
+              this.$message.error("操作失败!");
             }
           });
         }
