@@ -251,7 +251,7 @@ export default {
         condition: this.$route.query.condition,
         conditionalDescription: this.$route.query.conditionalDescription,
         sponsorClaim: this.$route.query.sponsorClaim,
-        xz: [],
+        prizeList: [],
         adv: this.$route.query.adv,
         addCondition: this.$route.query.addCondition,
         markdownAdv: this.$route.query.markdownAdv,
@@ -351,7 +351,9 @@ export default {
           console.log(resData);
           if (resData.code == 0) {
             that.form.prizeList = resData.data;
-            that.prizListData = resData.data;
+            resData.data.some((item, I) => {
+              that.prizListData.push(item);
+            });
             console.log(that.form.prizeList.length);
           } else {
             this.$message.error(resData.msg);
@@ -408,6 +410,7 @@ export default {
       if (that.form.prizeList.length > that.prizListData.length) {
         for (var i = 0; i < that.form.prizeList.length; i++) {
           let flData = that.form.prizeList[i];
+          plist.push(flData);
           let ad = false;
           for (var j = 0; j < that.prizListData.length; j++) {
             let pData = that.prizListData[j];
@@ -417,7 +420,7 @@ export default {
             }
           }
           if (!ad) {
-            plist.push(flData);
+            // plist.push(flData);
           }
         }
       } else {
