@@ -26,6 +26,12 @@
           <el-form-item label="商品价格">
             <el-input-number v-model="ruleForm.price" :min="1" :max="99999999"></el-input-number>
           </el-form-item>
+          <el-form-item label="实际售价">
+            <el-input-number v-model="ruleForm.actualPrice" :min="1" :max="99999999"></el-input-number>
+          </el-form-item>
+          <el-form-item label="讨论群组" prop="goodsGroup" placeholder="请输入商品讨论群组">
+            <el-input v-model="ruleForm.goodsGroup" type="text" class="sm-width-25-per" style></el-input>
+          </el-form-item>
           <el-form-item label="商品图片" prop="imgUrl">
             <el-upload
               class="avatar-uploader"
@@ -57,7 +63,9 @@ export default {
       ruleForm: {
         goodsName: "",
         goodsImg: "",
-        price: ""
+        price: "",
+        actualPrice: "",
+        goodsGroup: ""
       },
       rules: {
         goodsName: [{ required: true, message: "请输入描述", trigger: "blur" }]

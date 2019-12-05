@@ -26,6 +26,12 @@
           <el-form-item label="商品价格">
             <el-input-number v-model="ruleForm.price" :min="1" :max="99999999"></el-input-number>
           </el-form-item>
+          <el-form-item label="实际售价">
+            <el-input-number v-model="ruleForm.actualPrice" :min="1" :max="99999999"></el-input-number>
+          </el-form-item>
+          <el-form-item label="讨论群组" prop="goodsGroup" placeholder="请输入商品讨论群组">
+            <el-input v-model="ruleForm.goodsGroup" type="text" class="sm-width-25-per" style></el-input>
+          </el-form-item>
           <el-form-item label="商品状态">
             <el-radio v-model="ruleForm.state" :label="-1">删除</el-radio>
             <el-radio v-model="ruleForm.state" :label="1">售卖</el-radio>
@@ -66,7 +72,9 @@ export default {
         state: this.$route.query.state,
         goodsName: this.$route.query.goodsName,
         goodsImg: this.$route.query.goodsImg,
-        price: this.$route.query.price
+        price: this.$route.query.price,
+        actualPrice: this.$route.query.actualPrice,
+        goodsGroup: this.$route.query.goodsGroup
       },
       rules: {
         goodsName: [{ required: true, message: "请输入描述", trigger: "blur" }]
@@ -103,7 +111,9 @@ export default {
             that.dataItem.state == that.ruleForm.state &&
             that.dataItem.goodsName == that.ruleForm.goodsName &&
             that.dataItem.price == that.ruleForm.price &&
-            that.dataItem.goodsImg == that.ruleForm.goodsImg
+            that.dataItem.goodsImg == that.ruleForm.goodsImg &&
+            that.dataItem.actualPrice == that.ruleForm.actualPrice &&
+            that.dataItem.goodsGroup == that.ruleForm.goodsGroup
           ) {
             this.$message.warning("请编辑后再提交!");
             return;
@@ -125,7 +135,9 @@ export default {
                 goodsName: that.ruleForm.goodsName,
                 goodsImg: that.ruleForm.goodsImg,
                 price: that.ruleForm.price,
-                state: that.ruleForm.state
+                state: that.ruleForm.state,
+                actualPrice: that.ruleForm.actualPrice,
+                goodsGroup: that.ruleForm.goodsGroup
               };
               this.$message.success("编辑成功!");
               // this.ruleForm = {
